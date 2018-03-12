@@ -1,4 +1,4 @@
-package com.example.android.popularmovies;
+package com.example.android.popularmovies.ui.welcomescreen;
 
 import android.content.Context;
 import android.view.View;
@@ -7,15 +7,25 @@ import android.widget.AbsListView.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-public class MovieAdapter extends BaseAdapter {
-    private Context mContext;
+import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.services.QueryUtils;
+import com.example.android.popularmovies.ui.detailsscreen.Movie;
+import com.squareup.picasso.Picasso;
+
+import static com.example.android.popularmovies.services.UrlBuilder.urlBuilder;
+
+class MovieAdapter extends BaseAdapter {
+
+    public static final String LOG_TAG = MovieAdapter.class.getName();
+
+    private final Context mContext;
 
     public MovieAdapter(Context c) {
-        mContext = c;
+        this.mContext = c;
     }
 
     public int getCount() {
-        return mThumbIds.length;
+        return 4;
     }
 
     public Object getItem(int position) {
@@ -28,7 +38,9 @@ public class MovieAdapter extends BaseAdapter {
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
+
         ImageView imageView;
+
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
@@ -38,15 +50,15 @@ public class MovieAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        imageView.setImageResource(mThumbIds[position]);
+        Picasso.with(mContext)
+                .load(urlBuilder((movieProvider(position).getPoster())))
+                .into(imageView);
+
         return imageView;
     }
 
-    // references to the place holder images
-    private Integer[] mThumbIds = {
-            R.drawable.place_holder_black, R.drawable.place_holder_grey,
-            R.drawable.place_holder_black, R.drawable.place_holder_grey,
-            R.drawable.place_holder_black, R.drawable.place_holder_grey,
-            R.drawable.place_holder_black, R.drawable.place_holder_grey,
-    };
+    private Movie movieProvider(int position) {
+        String[] movies = mContext.getResources().getStringArray(R.array.movie_details);
+        return QueryUtils.parseMovieJson(movies[position]);
+    }
 }

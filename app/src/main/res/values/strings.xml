@@ -1,3 +1,82 @@
 <resources>
     <string name="app_name">Popular Movies</string>
+
+    <!-- Detail Activity-->
+    <string name="title_label">Title:</string>
+    <string name="plot_synopsis_label">Plot synopsis:</string>
+    <string name="user_rating_label">User rating:</string>
+    <string name="release_date_label">Release date:</string>
+
+    <!-- Content descriptions-->
+    <string name="movie_poster_content_description">Movie picture</string>
+
+    <!-- Error messages-->
+    <string name="detail_error_message">Movie data not available</string>
+
+    <string-array name="movie_details">
+        <item>
+            {\"vote_count\":6477,
+            \"id\":269149,
+            \"video\":false,
+            \"vote_average\":7.7,
+            \"title\":\"Zootopia\",
+            \"popularity\":516.411141,
+            \"poster_path\":\"sM33SANp9z6rXW8Itn7NnG1GOEs.jpg\",
+            \"original_language\":\"en\",
+            \"original_title\":\"Zootopia\",
+            \"genre_ids\":[  ],
+            \"backdrop_path\":\"mhdeE1yShHTaDbJVdWyTlzFvNkr.jpg\",
+            \"adult\":false,
+            \"overview\":\"Determined to prove herself, Officer Judy Hopps, the first bunny on Zootopia\'s police force, jumps at the chance to crack her first case - even if it means partnering with scam-artist fox Nick Wilde to solve the mystery.\",
+            \"release_date\":\"2016-02-11\"}
+        </item>
+        <item>
+            {\"vote_count\":2234,
+            \"id\":399055,
+            \"video\":false,
+            \"vote_average\":7.4,
+            \"title\":\"The Shape of Water\",
+            \"popularity\":452.295995,
+            \"poster_path\":\"k4FwHlMhuRR5BISY2Gm2QZHlH5Q.jpg\",
+            \"original_language\":\"en\",
+            \"original_title\":\"The Shape of Water\",
+            \"genre_ids\":[  ],
+            \"backdrop_path\":\"rgyhSn3mINvkuy9iswZK0VLqQO3.jpg\",
+            \"adult\":false,
+            \"overview\":\"An other-worldly story, set against the backdrop of Cold War era America circa 1962, where a mute janitor working at a lab falls in love with an amphibious man being held captive there and devises a plan to help him escape.\",
+            \"release_date\":\"2017-12-01\"}
+        </item>
+        <item>
+            {\"vote_count\":2597,
+            \"id\":284054,
+            \"video\":false,
+            \"vote_average\":7.4,
+            \"title\":\"Black Panther\",
+            \"popularity\":309.731075,
+            \"poster_path\":\"uxzzxijgPIY7slzFvMotPv8wjKA.jpg\",
+            \"original_language\":\"en\",
+            \"original_title\":\"Black Panther\",
+            \"genre_ids\":[  ],
+            \"backdrop_path\":\"b6ZJZHUdMEFECvGiDpJjlfUWela.jpg\",
+            \"adult\":false,
+            \"overview\":\"After the events of Captain America: Civil War, King T\'Challa returns home to the reclusive, technologically advanced African nation of Wakanda to serve as his country\'s new leader. However, T\'Challa soon finds that he is challenged for the throne from factions within his own country. When two foes conspire to destroy Wakanda, the hero known as Black Panther must team up with C.I.A. agent Everett K. Ross and members of the Dora Milaje, Wakandan special forces, to prevent Wakanda from being dragged into a world war.\",
+            \"release_date\":\"2018-02-13\"}
+        </item>
+        <item>
+            {\"vote_count\":7286,
+            \"id\":198663,
+            \"video\":false,
+            \"vote_average\":7,
+            \"title\":\"The Maze Runner\",
+            \"popularity\":282.956167,
+            \"poster_path\":\"coss7RgL0NH6g4fC2s5atvf3dFO.jpg\",
+            \"original_language\":\"en\",
+            \"original_title\":\"The Maze Runner\",
+            \"genre_ids\":[  ],
+            \"backdrop_path\":\"lkOZcsXcOLZYeJ2YxJd3vSldvU4.jpg\",
+            \"adult\":false,
+            \"overview\":\"Set in a post-apocalyptic world, young Thomas is deposited in a community of boys after his memory is erased, soon learning they\'re all trapped in a maze that will require him to join forces with fellow “runners” for a shot at escape.\",
+            \"release_date\":\"2014-09-10\"}
+        </item>
+    </string-array>
 </resources>
