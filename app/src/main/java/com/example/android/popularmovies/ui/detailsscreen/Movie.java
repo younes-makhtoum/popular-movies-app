@@ -1,21 +1,24 @@
 package com.example.android.popularmovies.ui.detailsscreen;
 
-public class Movie {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Movie implements Parcelable {
 
     // User rating of the movie
-    private final float userRating;
+    private float userRating;
 
     // Title of the movie
-    private final String title;
+    private String title;
 
     // Poster of the movie
-    private final String poster;
+    private String poster;
 
     // Plot synopsis of the movie
-    private final String plotSynopsis;
+    private String plotSynopsis;
 
     // Release date of the movie
-    private final String releaseDate;
+    private String releaseDate;
 
     /*
     * Create a new Movie object.
@@ -34,7 +37,7 @@ public class Movie {
         this.releaseDate = releaseDate;
     }
 
-    //Getter methods for the movie objects variables
+    // Getter methods for the movie objects variables
     public float getUserRating() {
         return userRating;
     }
@@ -51,5 +54,42 @@ public class Movie {
 
     public String getReleaseDate() {
         return releaseDate;
+    }
+
+    // Write object values to parcel for storage
+    public void writeToParcel(Parcel dest, int flags){
+        dest.writeFloat(userRating);
+        dest.writeString(title);
+        dest.writeString(poster);
+        dest.writeString(plotSynopsis);
+        dest.writeString(releaseDate);
+    }
+
+    // Constructor used for parcel
+    public Movie(Parcel parcel){
+        userRating = parcel.readFloat();
+        title = parcel.readString();
+        poster = parcel.readString();
+        plotSynopsis = parcel.readString();
+        releaseDate = parcel.readString();
+    }
+
+    // Creator - used when un-parceling our parcel (creating a Movie object)
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>(){
+
+        @Override
+        public Movie createFromParcel(Parcel parcel) {
+            return new Movie(parcel);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[0];
+        }
+    };
+
+    //return hashcode of object
+    public int describeContents() {
+        return hashCode();
     }
 }
