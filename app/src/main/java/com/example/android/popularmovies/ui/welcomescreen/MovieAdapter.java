@@ -1,13 +1,16 @@
 package com.example.android.popularmovies.ui.welcomescreen;
 
+import android.content.Intent;
+import android.support.v7.widget.RecyclerView;
 import android.content.Context;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView.LayoutParams;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.ui.detailsscreen.DetailActivity;
 import com.example.android.popularmovies.ui.detailsscreen.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -16,20 +19,62 @@ import java.util.List;
 
 import static com.example.android.popularmovies.services.UrlBuilder.posterUrlBuilder;
 
-class MovieAdapter extends BaseAdapter {
+public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder> {
 
     // Tag for log messages
     public static final String LOG_TAG = MovieAdapter.class.getName();
 
-    private final Context mContext;
+    private final Context context;
     private List<Movie> moviesList = new ArrayList<>();
 
-    public MovieAdapter(Context c, List<Movie> moviesList) {
-        this.mContext = c;
+    public MovieAdapter(Context context, List<Movie> moviesList) {
+        this.context = context;
         this.moviesList = moviesList;
     }
 
-    public int getCount() {
+    @Override
+    public MovieAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // Inflate the item layout
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_grid_item, parent, false);
+        return new MyViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(MovieAdapter.MyViewHolder holder, final int position) {
+
+        Movie currentMovie = moviesList.get(position);
+
+        if (!currentMovie.getPoster().isEmpty()) {
+
+            Log.v(LOG_TAG, "The URL of the poster to display is : " + posterUrlBuilder(currentMovie.getPoster()));
+
+            Picasso.with(context)
+                    .load(posterUrlBuilder(currentMovie.getPoster()))
+                    .into(holder.posterImageView);
+        }
+        else {
+            Picasso.with(context)
+                    .load(R.drawable.movie_poster_not_available)
+                    .into(holder.posterImageView);
+        }
+
+        // implement setOnClickListener event on item view.
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // open another activity on item click
+                Intent intent = new Intent(context, DetailActivity.class);
+                // put movie object in the Intent
+                intent.putExtra("Movie", moviesList.get(position));
+                // start Intent
+                context.startActivity(intent);
+            }
+        });
+
+    }
+
+    @Override
+    public int getItemCount() {
         if (moviesList == null) {
             return 0;
         } else {
@@ -37,42 +82,17 @@ class MovieAdapter extends BaseAdapter {
         }
     }
 
-    public Object getItem(int position) {
-        return moviesList.get(position);
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+
+        private ImageView posterImageView;
+
+        private MyViewHolder(View itemView) {
+            super(itemView);
+            posterImageView = itemView.findViewById(R.id.movie_poster_grid);
+        }
     }
 
-    public long getItemId(int position) {
-        return position;
-    }
-
-    // create a new ImageView for each item referenced by the Adapter
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        Movie currentMovie = moviesList.get(position);
-        ImageView imageView;
-
-        if (convertView == null) {
-            imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            imageView.setAdjustViewBounds(true);
-        } else {
-            imageView = (ImageView) convertView;
-        }
-
-        if (!currentMovie.getPoster().isEmpty()) {
-            Picasso.with(mContext)
-                    .load(posterUrlBuilder(currentMovie.getPoster()))
-                    .into(imageView);
-        }
-        else {
-            Picasso.with(mContext)
-                    .load(R.drawable.movie_poster_not_available)
-                    .into(imageView);
-        }
-        return imageView;
-    }
-
-    // Helper method to set the actual movies list into the gridview on the activity
+    // Helper method to set the actual movies list into the recycler view on the activity
     public void setMovieInfoList(List<Movie> moviesList) {
         this.moviesList = moviesList;
     }

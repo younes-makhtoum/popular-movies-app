@@ -38,7 +38,7 @@ public class DetailActivity extends AppCompatActivity {
 
         Picasso.with(this)
                 .load(posterUrlBuilder(selectedMovie.getPoster()))
-                .into(binding.moviePoster);
+                .into(binding.moviePosterDetail);
 
         // Populate the UI using this method
         populateUI();

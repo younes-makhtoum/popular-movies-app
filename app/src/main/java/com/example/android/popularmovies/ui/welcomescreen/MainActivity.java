@@ -2,19 +2,17 @@ package com.example.android.popularmovies.ui.welcomescreen;
 
 import android.app.LoaderManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.Loader;
 import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.view.View;
-import android.widget.AdapterView;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.databinding.ActivityMainBinding;
-import com.example.android.popularmovies.ui.detailsscreen.DetailActivity;
 import com.example.android.popularmovies.ui.detailsscreen.Movie;
 
 import java.util.ArrayList;
@@ -27,8 +25,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     // Tag for log messages
     public static final String LOG_TAG = MainActivity.class.getName();
 
-    private MovieAdapter mAdapter;
     private List<Movie> moviesList = new ArrayList<>();
+    private MovieAdapter movieAdapter;
+
     private static final int MOVIE_LOADER_ID = 1;
 
     // Store the binding
@@ -41,24 +40,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Inflate the content view
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        mAdapter = new MovieAdapter(this, moviesList);
+        // set GridLayoutManager with default vertical orientation and two columns to RecyclerView
+        binding.recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
 
-        binding.gridview.setAdapter(mAdapter);
+        movieAdapter = new MovieAdapter(this, moviesList);
 
-        binding.gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                launchDetailActivity(position);
-            }
-        });
+        binding.recyclerView.setAdapter(movieAdapter);
 
         doSearch();
-    }
-
-    private void launchDetailActivity(int position) {
-        Intent intent = new Intent(this, DetailActivity.class);
-        intent.putExtra("Movie", moviesList.get(position));
-        startActivity(intent);
     }
 
     // Launch the network connection to get the data from the Movie database API
@@ -98,13 +87,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         binding.loadingSpinner.setVisibility(View.GONE);
 
         //Clear the adapter of previous movies data
-       mAdapter.setMovieInfoList(null);
+        movieAdapter.setMovieInfoList(null);
 
         // If there is a valid list of movies, then add them to the adapter's data set.
         // This will trigger the GridView to update itself.
         if (movies != null && !movies.isEmpty()) {
-            mAdapter.setMovieInfoList(movies);
-            mAdapter.notifyDataSetChanged();
+            movieAdapter.setMovieInfoList(movies);
+            movieAdapter.notifyDataSetChanged();
             moviesList = new ArrayList<>(movies);
         }
         else {
@@ -116,6 +105,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<List<Movie>> loader) {
         //Loader reset, so we can clear out our existing data.
-        mAdapter.setMovieInfoList(null);
+        movieAdapter.setMovieInfoList(null);
     }
 }
