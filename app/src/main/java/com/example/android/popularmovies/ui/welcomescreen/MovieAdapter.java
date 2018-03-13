@@ -32,6 +32,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
         this.moviesList = moviesList;
     }
 
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+
+        private ImageView posterImageView;
+
+        private MyViewHolder(View itemView) {
+            super(itemView);
+            posterImageView = itemView.findViewById(R.id.movie_poster_grid);
+        }
+    }
+
     @Override
     public MovieAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Inflate the item layout
@@ -79,16 +89,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
             return 0;
         } else {
             return moviesList.size();
-        }
-    }
-
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-
-        private ImageView posterImageView;
-
-        private MyViewHolder(View itemView) {
-            super(itemView);
-            posterImageView = itemView.findViewById(R.id.movie_poster_grid);
         }
     }
 
