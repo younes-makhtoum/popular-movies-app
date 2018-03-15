@@ -40,8 +40,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Inflate the content view
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        // set GridLayoutManager with default vertical orientation and two columns to RecyclerView
+        // set GridLayoutManager with default vertical orientation and two columns to the RecyclerView
         binding.recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
+
+        /* Enable performance optimizations (significantly smoother scrolling),
+        * by setting the following parameters on the RecyclerView */
+        binding.recyclerView.setHasFixedSize(true);
+        binding.recyclerView.setItemViewCacheSize(20);
+        binding.recyclerView.setDrawingCacheEnabled(true);
+        binding.recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+
+        // Add space between grid items in the RecyclerView,
+        SpacesItemDecoration decoration = new SpacesItemDecoration(4);
+        binding.recyclerView.addItemDecoration(decoration);
 
         movieAdapter = new MovieAdapter(this, moviesList);
 
@@ -86,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Hide loading indicator because the data has been loaded
         binding.loadingSpinner.setVisibility(View.GONE);
 
-        //Clear the adapter of previous movies data
+        // Clear the adapter of previous movies data
         movieAdapter.setMovieInfoList(null);
 
         // If there is a valid list of movies, then add them to the adapter's data set.

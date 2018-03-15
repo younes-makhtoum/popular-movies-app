@@ -54,19 +54,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
 
         Movie currentMovie = moviesList.get(position);
 
-        if (!currentMovie.getPoster().isEmpty()) {
-
-            Log.v(LOG_TAG, "The URL of the poster to display is : " + posterUrlBuilder(currentMovie.getPoster()));
-
-            Picasso.with(context)
-                    .load(posterUrlBuilder(currentMovie.getPoster()))
-                    .into(holder.posterImageView);
-        }
-        else {
-            Picasso.with(context)
-                    .load(R.drawable.movie_poster_not_available)
-                    .into(holder.posterImageView);
-        }
+        Picasso.with(context)
+                .load(posterUrlBuilder(currentMovie.getPoster()))
+                .placeholder(R.drawable.movie_poster_not_available)
+                .into(holder.posterImageView);
 
         // implement setOnClickListener event on item view.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
