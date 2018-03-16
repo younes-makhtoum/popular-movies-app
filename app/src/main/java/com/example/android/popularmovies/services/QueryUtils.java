@@ -41,7 +41,6 @@ public class QueryUtils {
 
     //Query the Movies database API
     public static List<Movie> fetchMovieData(String requestUrl) {
-
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
@@ -58,9 +57,6 @@ public class QueryUtils {
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error closing input stream", e);
         }
-
-        Log.v(LOG_TAG, "this is the jsonResponse :" + jsonResponse);
-
         return extractMoviesFromJSON(jsonResponse);
     }
 
@@ -194,8 +190,6 @@ public class QueryUtils {
             // Print a log message with the message from the exception.
             Log.e("QueryUtils", "Problem parsing the movie JSON results", e);
         }
-
-        Log.v(LOG_TAG, "this is the list of movies :" + movies);
 
         // Return the list of movies :
         return movies;

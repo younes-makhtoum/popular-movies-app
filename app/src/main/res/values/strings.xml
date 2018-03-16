@@ -1,7 +1,15 @@
 <resources>
     <string name="app_name">Popular Movies</string>
 
-    <!-- Detail Activity-->
+    <!-- Values for movies sorting -->
+    <string name="sort_by">Sort by :</string>
+    <string name="sorting_selector_prompt">Select a sorting method</string>
+    <string-array name="sorting_selector_array">
+        <item name="most_popular">Most popular</item>
+        <item name="top_rated">Top rated</item>
+    </string-array>
+
+    <!-- Values for Detail Activity labels -->
     <string name="title_label">Title:</string>
     <string name="plot_synopsis_label">Plot synopsis:</string>
     <string name="user_rating_label">User rating:</string>
@@ -10,5 +18,7 @@
     <!-- Content descriptions-->
     <string name="movie_poster">Movie poster</string>
     <string name="error_message">Error message</string>
+
+
 
 </resources>
