@@ -14,6 +14,7 @@ public class UrlBuilder {
     private static final String PRE_PATH_3 = "3";
     private static final String PRE_PATH_T = "t";
     private static final String PRE_PATH_P = "p";
+    private static final String THUMBNAIL_SIZE = "w500";
     private static final String POSTER_SIZE = "w780";
     private static final String API_KEY = "api_key";
 
@@ -33,6 +34,7 @@ public class UrlBuilder {
         return uriBuilder.toString();
     }
 
+    // URL builder for movies posters in the welcome screen
     public static String posterUrlBuilder(String moviePath) {
 
         Uri.Builder uriBuilder = new Uri.Builder();
@@ -41,6 +43,20 @@ public class UrlBuilder {
                 .appendPath(PRE_PATH_T)
                 .appendPath(PRE_PATH_P)
                 .appendPath(POSTER_SIZE)
+                .appendPath(moviePath);
+
+        return uriBuilder.toString();
+    }
+
+    // URL builder for movies thumbnails in the details screen
+    public static String thumbnailUrlBuilder(String moviePath) {
+
+        Uri.Builder uriBuilder = new Uri.Builder();
+        uriBuilder.scheme(SCHEME)
+                .authority(IMAGE_AUTHORITY)
+                .appendPath(PRE_PATH_T)
+                .appendPath(PRE_PATH_P)
+                .appendPath(THUMBNAIL_SIZE)
                 .appendPath(moviePath);
 
         return uriBuilder.toString();

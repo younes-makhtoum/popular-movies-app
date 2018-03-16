@@ -11,6 +11,7 @@ import com.example.android.popularmovies.databinding.ActivityDetailBinding;
 import com.squareup.picasso.Picasso;
 
 import static com.example.android.popularmovies.services.UrlBuilder.posterUrlBuilder;
+import static com.example.android.popularmovies.services.UrlBuilder.thumbnailUrlBuilder;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -37,7 +38,7 @@ public class DetailActivity extends AppCompatActivity {
         setTitle(selectedMovie.getTitle());
 
         Picasso.with(this)
-                .load(posterUrlBuilder(selectedMovie.getPoster()))
+                .load(thumbnailUrlBuilder(selectedMovie.getPoster()))
                 .into(binding.moviePosterDetail);
 
         // Populate the UI using this method
