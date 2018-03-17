@@ -54,6 +54,7 @@ public class QueryUtils {
         String jsonResponse = null;
         try {
             jsonResponse = makeHttpRequest(url);
+
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error closing input stream", e);
         }

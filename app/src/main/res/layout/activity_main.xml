@@ -27,7 +27,7 @@
 
         <!-- Main UI layout when the loading of movie data from the APÏ is successful -->
         <LinearLayout
-            android:id="@+id/successful_loading_layout"
+            android:id="@+id/posters_display_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/large_margin"
