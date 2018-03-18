@@ -6,6 +6,7 @@ import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -16,7 +17,6 @@ import com.example.android.popularmovies.ui.detailsscreen.Movie;
 import com.novoda.merlin.Merlin;
 import com.novoda.merlin.MerlinsBeard;
 import com.novoda.merlin.registerable.connection.Connectable;
-import com.novoda.merlin.registerable.disconnection.Disconnectable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.v(LOG_TAG, "LOG// We are in onCreate");
+
         // Inflate the content view
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
@@ -75,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         binding.recyclerView.setAdapter(movieAdapter);
 
-        merlin = new Merlin.Builder().withConnectableCallbacks().withDisconnectableCallbacks().build(getApplicationContext());
+        merlin = new Merlin.Builder().withConnectableCallbacks().build(getApplicationContext());
         merlinsBeard = MerlinsBeard.from(getApplicationContext());
 
         merlin.registerConnectable(new Connectable() {
@@ -84,21 +86,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        // Hide loading indicator so network disconnect error message will be visible
                         binding.emptyView.setVisibility(View.GONE);
                         doSearch();
-                    }
-                });
-            }
-        });
-
-        merlin.registerDisconnectable(new Disconnectable() {
-            @Override
-            public void onDisconnect() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        noInternetDisclaimer();
                     }
                 });
             }
@@ -107,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
        binding.sortingSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                // Don't perform a search from here at app launch (checkSpinner = 0)
                 if(++checkSpinner > 1) {
                     // 0 is the default spinner position for the sorting by "Most popular"
                     if (position == 0) {
@@ -116,8 +106,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         sortingSelection = TOP_RATED_URL;
                     }
                     sortSelectionHasChanged = true;
-                    movieAdapter.notifyDataSetChanged();
-                    doSearch();
+                    // Check the internet connection before sending a search request
+                    if (merlinsBeard.isConnected()) {
+                        movieAdapter.notifyDataSetChanged();
+                        doSearch();
+                    } else {
+                        noInternetDisclaimer();
+                    }
                 }
             }
             @Override
@@ -125,18 +120,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 // by default, at the app launch, the sorting selection is set to "most popular"
             }
        });
+
+       // Make sure to show the 'noInternetDisclaimer' at app launch if no internet is detected
+        if(checkSpinner == 0 && !merlinsBeard.isConnected()) {
+            noInternetDisclaimer();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         merlin.bind();
-
-        if (merlinsBeard.isConnected()) {
-            doSearch();
-        } else {
-            noInternetDisclaimer();
-        }
     }
 
     @Override
@@ -154,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     // Launch the network connection to get the data from the Movie database API
     private void doSearch() {
+
         // Get a reference to the LoaderManager, in order to interact with loaders.
         LoaderManager loaderManager = getLoaderManager();
         // Depending on the relevant case, initialize or restart the loader
