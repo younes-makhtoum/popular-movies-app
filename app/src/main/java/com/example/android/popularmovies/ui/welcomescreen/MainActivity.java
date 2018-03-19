@@ -2,11 +2,11 @@ package com.example.android.popularmovies.ui.welcomescreen;
 
 import android.app.LoaderManager;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -31,12 +31,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private List<Movie> moviesList = new ArrayList<>();
     private MovieAdapter movieAdapter;
 
-    private String sortingSelection = MOST_POPULAR_URL;
-
     private static final int MOVIE_LOADER_ID = 1;
     private static final String MOST_POPULAR_URL = "popular";
     private static final String TOP_RATED_URL = "top_rated";
+    private static final String KEY_SORT_SELECTION = "KEY_SORT_SELECTION";
 
+    // Sort selection default value
+    private String sortingSelection = MOST_POPULAR_URL;
+
+    // Sort selection default change status
     private boolean sortSelectionHasChanged = false;
 
     // Used to prevent the sort method spinner listener to do a search at activity launch
@@ -50,11 +53,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     // Used to check the instant internet connection status
     MerlinsBeard merlinsBeard;
 
+    // Shared Preferences variables
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor sharedPrefEditor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Log.v(LOG_TAG, "LOG// We are in onCreate");
 
         // Inflate the content view
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
@@ -80,6 +85,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         merlin = new Merlin.Builder().withConnectableCallbacks().build(getApplicationContext());
         merlinsBeard = MerlinsBeard.from(getApplicationContext());
 
+        // Create a shared preferences file in order to save the sort selection in the spinner
+        sharedPref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+
+        // Internet status activation is monitored with this listener registration
         merlin.registerConnectable(new Connectable() {
             @Override
             public void onConnect() {
@@ -87,6 +96,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     @Override
                     public void run() {
                         binding.emptyView.setVisibility(View.GONE);
+                        // Make sure to only get the sort selection from shared preference,
+                        // if a record already exist in the related file.
+                        // Otherwise, query the API with default value of the sortSelection variable.
+                        if (sharedPref.contains(KEY_SORT_SELECTION))  {
+                            getSortSelection();
+                        }
                         doSearch();
                     }
                 });
@@ -105,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     } else {
                         sortingSelection = TOP_RATED_URL;
                     }
-                    sortSelectionHasChanged = true;
+                    saveSortSelection();
                     // Check the internet connection before sending a search request
                     if (merlinsBeard.isConnected()) {
                         movieAdapter.notifyDataSetChanged();
@@ -117,12 +132,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // by default, at the app launch, the sorting selection is set to "most popular"
+                // As the selection and spinner never disappears from the activity's layout,
+                // this method is never called, but mandatory to be implemented.
             }
        });
 
-       // Make sure to show the 'noInternetDisclaimer' at app launch if no internet is detected
-        if(checkSpinner == 0 && !merlinsBeard.isConnected()) {
+       // Make sure to show the 'noInternetDisclaimer' at app launch, if no internet is detected.
+        if(!merlinsBeard.isConnected()) {
             noInternetDisclaimer();
         }
     }
@@ -130,13 +146,34 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onResume() {
         super.onResume();
+        // Bind the merlin listener so that internet status changes are monitored
         merlin.bind();
     }
 
     @Override
     protected void onPause() {
+        // Unbind the merlin listener as the activity is on pause
         merlin.unbind();
         super.onPause();
+    }
+
+    // Saves the sort selection in shared preferences
+    private void saveSortSelection(){
+        sortSelectionHasChanged = true;
+        sharedPrefEditor = sharedPref.edit();
+        sharedPrefEditor.putString(KEY_SORT_SELECTION, sortingSelection); // Storing string
+        sharedPrefEditor.apply();
+    }
+
+    // Get the sort selection from shared preferences
+    private void getSortSelection(){
+        sortingSelection = sharedPref.getString(KEY_SORT_SELECTION, null); // getting String
+        if (MOST_POPULAR_URL.equals(sortingSelection)) {
+            binding.sortingSelector.setSelection(0);
+            // 1 is the spinner position for the sorting by "Top rated"
+        } else {
+            binding.sortingSelector.setSelection(1);
+        }
     }
 
     // No internet disclaimer
@@ -148,7 +185,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     // Launch the network connection to get the data from the Movie database API
     private void doSearch() {
-
         // Get a reference to the LoaderManager, in order to interact with loaders.
         LoaderManager loaderManager = getLoaderManager();
         // Depending on the relevant case, initialize or restart the loader
@@ -182,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // Show the successful loading layout
             binding.postersDisplayLayout.setVisibility(View.VISIBLE);
             moviesList = new ArrayList<>(movies);
+            binding.sortingSelector.setEnabled(true);
         }
         else {
             // Set empty view to display the "no results found" image
