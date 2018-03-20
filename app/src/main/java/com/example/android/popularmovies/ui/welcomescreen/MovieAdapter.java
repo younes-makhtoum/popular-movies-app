@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.ui.detailsscreen.DetailActivity;
-import com.example.android.popularmovies.ui.detailsscreen.Movie;
+import com.example.android.popularmovies.ui.detailsscreens.DetailActivity;
+import com.example.android.popularmovies.ui.detailsscreens.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

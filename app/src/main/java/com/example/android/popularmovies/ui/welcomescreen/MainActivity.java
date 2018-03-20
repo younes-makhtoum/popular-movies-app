@@ -15,7 +15,7 @@ import android.view.View;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.databinding.ActivityMainBinding;
-import com.example.android.popularmovies.ui.detailsscreen.Movie;
+import com.example.android.popularmovies.ui.detailsscreens.Movie;
 
 import com.novoda.merlin.Merlin;
 import com.novoda.merlin.MerlinsBeard;

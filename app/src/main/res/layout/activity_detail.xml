@@ -1,81 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.android.popularmovies.ui.detailsscreen.DetailActivity">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.android.popularmovies.ui.detailsscreens.DetailActivity">
 
-    <ScrollView
+    <android.support.design.widget.TabLayout
+        android:id="@+id/sliding_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabMode="fixed"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/half_margin">
+        android:layout_margin="@dimen/half_margin"/>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/movie_poster_detail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginBottom="@dimen/half_margin"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/movie_poster"
-                android:scaleType="centerCrop" />
-
-            <TextView
-                android:id="@+id/title_label"
-                android:layout_marginStart="@dimen/large_margin"
-                android:layout_toEndOf="@+id/movie_poster_detail"
-                style="@style/Label"
-                android:text="@string/title_label" />
-
-            <TextView
-                android:id="@+id/title_data"
-                android:layout_below="@+id/title_label"
-                android:layout_alignStart="@+id/title_label"
-                style="@style/Data" />
-
-            <TextView
-                android:id="@+id/release_date_label"
-                android:layout_below="@+id/title_data"
-                android:layout_alignStart="@+id/title_label"
-                style="@style/Label"
-                android:text="@string/release_date_label" />
-
-            <TextView
-                android:id="@+id/release_date_data"
-                android:layout_below="@+id/release_date_label"
-                android:layout_alignStart="@+id/title_label"
-                style="@style/Data" />
-
-            <TextView
-                android:id="@+id/user_rating_label"
-                android:layout_below="@+id/release_date_data"
-                android:layout_alignStart="@+id/title_label"
-                style="@style/Label"
-                android:text="@string/user_rating_label" />
-
-            <TextView
-                android:id="@+id/user_rating_data"
-                android:layout_below="@+id/user_rating_label"
-                android:layout_alignStart="@+id/title_label"
-                style="@style/Data" />
-
-            <TextView
-                android:id="@+id/plot_synopsis_label"
-                style="@style/Label"
-                android:layout_marginTop="@dimen/large_margin"
-                android:layout_below="@+id/movie_poster_detail"
-                android:text="@string/plot_synopsis_label" />
-
-            <TextView
-                android:id="@+id/plot_synopsis_data"
-                android:layout_below="@+id/plot_synopsis_label"
-                style="@style/Data" />
-
-        </RelativeLayout>
-
-    </ScrollView>
-
-</layout>
+</LinearLayout>

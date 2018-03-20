@@ -1,51 +1,50 @@
-package com.example.android.popularmovies.ui.detailsscreen;
+package com.example.android.popularmovies.ui.detailsscreens;
 
-import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.databinding.ActivityDetailBinding;
+import com.example.android.popularmovies.databinding.FragmentSummaryBinding;
 import com.squareup.picasso.Picasso;
 
-import static com.example.android.popularmovies.services.UrlBuilder.posterUrlBuilder;
 import static com.example.android.popularmovies.services.UrlBuilder.thumbnailUrlBuilder;
 
-public class DetailActivity extends AppCompatActivity {
-
-    // Tag for log messages
-    private static final String LOG_TAG = DetailActivity.class.getName();
+public class SummaryFragment extends Fragment {
 
     // Store the binding
-    private ActivityDetailBinding binding;
+    private FragmentSummaryBinding binding;
 
     // Declare an instance of Movie
     private Movie selectedMovie;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        // Inflate the content view (replacing `setContentView`)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
+        binding = FragmentSummaryBinding.bind(inflater.inflate(R.layout.fragment_summary, container, false));
 
-        // Collect our intent and get our parcel with the selected Movie object
-        Intent intent = getIntent();
-        selectedMovie  = intent.getParcelableExtra("Movie");
+        View rootView = binding.getRoot();
 
-        setTitle(selectedMovie.getTitle());
+        selectedMovie = ((DetailActivity)this.getActivity()).getSelectedMovie();
 
-        Picasso.with(this)
+        Picasso.with(getContext())
                 .load(thumbnailUrlBuilder(selectedMovie.getPoster()))
                 .into(binding.moviePosterDetail);
 
-        // Populate the UI using this method
         populateUI();
+
+        return rootView;
     }
 
-    // Populate the detail screen with the data of the selected movie.
+/*    @Override
+    public void onActivityCreated(Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
+        selectedMovie = ((DetailActivity)this.getActivity()).getSelectedMovie();
+    }*/
+
+    // Populate the summary screen with detailed data about the selected movie.
     private void populateUI() {
 
         if(!selectedMovie.getTitle().isEmpty()) {

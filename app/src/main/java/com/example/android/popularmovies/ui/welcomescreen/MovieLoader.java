@@ -4,7 +4,7 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 
 import com.example.android.popularmovies.services.QueryUtils;
-import com.example.android.popularmovies.ui.detailsscreen.Movie;
+import com.example.android.popularmovies.ui.detailsscreens.Movie;
 
 import java.util.List;
 

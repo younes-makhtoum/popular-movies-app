@@ -28,7 +28,7 @@
                 android:value=".ui.welcomescreen.MainActivity" />
         </activity>
         <activity
-            android:name=".ui.detailsscreen.DetailActivity"
+            android:name=".ui.detailsscreens.DetailActivity"
             android:parentActivityName=".ui.welcomescreen.MainActivity">
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data

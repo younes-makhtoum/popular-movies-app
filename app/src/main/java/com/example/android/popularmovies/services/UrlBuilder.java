@@ -19,7 +19,7 @@ public class UrlBuilder {
     private static final String API_KEY = "api_key";
 
     // Fill in your personal API key in this constant :
-    private static final String KEY = "";
+    private static final String KEY = "7053adcd96687589ce3f27f63df3325f";
 
     public static String queryUrlBuilder(String sortingSelection) {
 
