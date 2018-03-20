@@ -1,13 +1,23 @@
 <resources>
     <string name="app_name">Popular Movies</string>
 
-    <!-- Values for movies sorting -->
-    <string name="sort_by">Sort by :</string>
-    <string name="sorting_selector_prompt">Select a sorting method</string>
-    <string-array name="sorting_selector_array">
-        <item name="most_popular">Most popular</item>
-        <item name="top_rated">Top rated</item>
-    </string-array>
+    <!-- Settings Menu Item -->
+    <string name="settings_menu_item">Settings</string>
+    <!-- Settings Activity Title -->
+    <string name="settings_title">Movie Settings</string>
+
+    <!-- Strings for sort_by preference -->
+    <string name="settings_sort_by_label">Sort by</string>
+    <string name="settings_sort_by_key">sort_by</string>
+    <string name="settings_sort_by_default">@string/settings_sort_by_most_popular_value</string>
+
+    <!-- Label for sort_by most popular option -->
+    <string name="settings_sort_by_most_popular_label">Most popular</string>
+    <string name="settings_sort_by_most_popular_value">popular</string>
+
+    <!-- Label for sort_by top rated option -->
+    <string name="settings_sort_by_top_rated_label">Top rated</string>
+    <string name="settings_sort_by_top_rated_value">top_rated</string>
 
     <!-- Values for Detail Activity labels -->
     <string name="title_label">Title:</string>
@@ -18,7 +28,5 @@
     <!-- Content descriptions-->
     <string name="movie_poster">Movie poster</string>
     <string name="error_message">Error message</string>
-
-
 
 </resources>

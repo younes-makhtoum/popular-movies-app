@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Spinning progress animation only visible when the networking step is in progress -->
+        <!-- Spinning loading animation only visible when the networking step is in progress -->
         <ProgressBar
             android:id="@+id/loading_spinner"
             style="@style/Widget.AppCompat.ProgressBar"
@@ -16,7 +16,7 @@
             android:layout_centerInParent="true"
             android:visibility="gone"/>
 
-        <!-- Empty view is only visible when an issue occurs in the loading process -->
+        <!-- Empty view only visible when an issue occurs -->
         <ImageView
             android:id="@+id/empty_view"
             android:layout_width="wrap_content"
@@ -25,48 +25,15 @@
             android:contentDescription="@string/error_message"
             android:visibility="gone"/>
 
-        <!-- Main UI layout when the loading of movie data from the APÏ is successful -->
-        <LinearLayout
-            android:id="@+id/posters_display_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/large_margin"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/sorting_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/large_margin"
-                    android:text="@string/sort_by" />
-
-                <!-- Spinning progress animation only visible when the networking step is in progress -->
-                <Spinner
-                    android:id="@+id/sorting_selector"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:entries="@array/sorting_selector_array"
-                    android:prompt="@string/sorting_selector_prompt" />
-
-            </LinearLayout>
-
-        <!-- RecyclerView that holds all of the posters of the fetched movie -->
+        <!-- RecyclerView for movies posters display -->
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/large_margin"
             android:scrollbars="vertical"/>
-
-        </LinearLayout>
 
     </RelativeLayout>
 
 </layout>
+
+

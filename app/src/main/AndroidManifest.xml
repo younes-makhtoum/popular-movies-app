@@ -21,6 +21,14 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ui.welcomescreen.SettingsActivity"
+            android:parentActivityName=".ui.welcomescreen.MainActivity">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.welcomescreen.MainActivity" />
+        </activity>
+        <activity
             android:name=".ui.detailsscreen.DetailActivity"
             android:parentActivityName=".ui.welcomescreen.MainActivity">
             <!-- Parent activity meta-data to support 4.0 and lower -->

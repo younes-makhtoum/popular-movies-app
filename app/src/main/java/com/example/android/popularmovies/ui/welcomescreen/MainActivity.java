@@ -1,14 +1,17 @@
 package com.example.android.popularmovies.ui.welcomescreen;
 
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.databinding.ActivityMainBinding;
@@ -32,15 +35,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private MovieAdapter movieAdapter;
 
     private static final int MOVIE_LOADER_ID = 1;
-    private static final String MOST_POPULAR_URL = "popular";
-    private static final String TOP_RATED_URL = "top_rated";
-    private static final String KEY_SORT_SELECTION = "KEY_SORT_SELECTION";
-
-    // Sort selection default value
-    private String sortingSelection = MOST_POPULAR_URL;
-
-    // Sort selection default change status
-    private boolean sortSelectionHasChanged = false;
 
     // Used to prevent the sort method spinner listener to do a search at activity launch
     private int checkSpinner = 0;
@@ -53,10 +47,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     // Used to check the instant internet connection status
     MerlinsBeard merlinsBeard;
 
-    // Shared Preferences variables
-    SharedPreferences sharedPref;
-    SharedPreferences.Editor sharedPrefEditor;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,8 +57,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // set GridLayoutManager with default vertical orientation and two columns to the RecyclerView
         binding.recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
 
-        /* Enable performance optimizations (significantly smoother scrolling),
-        * by setting the following parameters on the RecyclerView */
+        // Enable performance optimizations (significantly smoother scrolling),
+        // by setting the following parameters on the RecyclerView
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setItemViewCacheSize(20);
         binding.recyclerView.setDrawingCacheEnabled(true);
@@ -85,9 +75,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         merlin = new Merlin.Builder().withConnectableCallbacks().build(getApplicationContext());
         merlinsBeard = MerlinsBeard.from(getApplicationContext());
 
-        // Create a shared preferences file in order to save the sort selection in the spinner
-        sharedPref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
-
         // Internet status activation is monitored with this listener registration
         merlin.registerConnectable(new Connectable() {
             @Override
@@ -96,46 +83,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     @Override
                     public void run() {
                         binding.emptyView.setVisibility(View.GONE);
-                        // Make sure to only get the sort selection from shared preference,
-                        // if a record already exist in the related file.
-                        // Otherwise, query the API with default value of the sortSelection variable.
-                        if (sharedPref.contains(KEY_SORT_SELECTION))  {
-                            getSortSelection();
-                        }
                         doSearch();
                     }
                 });
             }
         });
-
-       binding.sortingSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // Don't perform a search from here at app launch (checkSpinner = 0)
-                if(++checkSpinner > 1) {
-                    // 0 is the default spinner position for the sorting by "Most popular"
-                    if (position == 0) {
-                        sortingSelection = MOST_POPULAR_URL;
-                    // 1 is the spinner position for the sorting by "Top rated"
-                    } else {
-                        sortingSelection = TOP_RATED_URL;
-                    }
-                    saveSortSelection();
-                    // Check the internet connection before sending a search request
-                    if (merlinsBeard.isConnected()) {
-                        movieAdapter.notifyDataSetChanged();
-                        doSearch();
-                    } else {
-                        noInternetDisclaimer();
-                    }
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // As the selection and spinner never disappears from the activity's layout,
-                // this method is never called, but mandatory to be implemented.
-            }
-       });
 
        // Make sure to show the 'noInternetDisclaimer' at app launch, if no internet is detected.
         if(!merlinsBeard.isConnected()) {
@@ -157,51 +109,48 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onPause();
     }
 
-    // Saves the sort selection in shared preferences
-    private void saveSortSelection(){
-        sortSelectionHasChanged = true;
-        sharedPrefEditor = sharedPref.edit();
-        sharedPrefEditor.putString(KEY_SORT_SELECTION, sortingSelection); // Storing string
-        sharedPrefEditor.apply();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
 
-    // Get the sort selection from shared preferences
-    private void getSortSelection(){
-        sortingSelection = sharedPref.getString(KEY_SORT_SELECTION, null); // getting String
-        if (MOST_POPULAR_URL.equals(sortingSelection)) {
-            binding.sortingSelector.setSelection(0);
-            // 1 is the spinner position for the sorting by "Top rated"
-        } else {
-            binding.sortingSelector.setSelection(1);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     // No internet disclaimer
     private void noInternetDisclaimer(){
-        binding.postersDisplayLayout.setVisibility(View.GONE);
+        binding.recyclerView.setVisibility(View.GONE);
         binding.emptyView.setImageResource(R.drawable.no_internet_escargot);
         binding.emptyView.setVisibility(View.VISIBLE);
     }
 
     // Launch the network connection to get the data from the Movie database API
     private void doSearch() {
-        // Get a reference to the LoaderManager, in order to interact with loaders.
         LoaderManager loaderManager = getLoaderManager();
-        // Depending on the relevant case, initialize or restart the loader
-        if(!sortSelectionHasChanged) {
-            loaderManager.initLoader(MOVIE_LOADER_ID, null, this);
-        }
-        else {
-            loaderManager.restartLoader(MOVIE_LOADER_ID, null, this);
-        }
-        binding.postersDisplayLayout.setVisibility(View.GONE);
+        loaderManager.initLoader(MOVIE_LOADER_ID, null, this);
+        binding.recyclerView.setVisibility(View.GONE);
         binding.loadingSpinner.setVisibility(View.VISIBLE);
     }
 
     @Override
     public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
         // Create a new loader for the given URL
-        return new MovieLoader(this, queryUrlBuilder(sortingSelection));
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String sortBy = sharedPrefs.getString(
+                getString(R.string.settings_sort_by_key),
+                getString(R.string.settings_sort_by_default)
+        );
+
+        return new MovieLoader(this, queryUrlBuilder(sortBy));
     }
 
     @Override
@@ -216,9 +165,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             movieAdapter.setMovieInfoList(movies);
             movieAdapter.notifyDataSetChanged();
             // Show the successful loading layout
-            binding.postersDisplayLayout.setVisibility(View.VISIBLE);
+            binding.recyclerView.setVisibility(View.VISIBLE);
             moviesList = new ArrayList<>(movies);
-            binding.sortingSelector.setEnabled(true);
         }
         else {
             // Set empty view to display the "no results found" image
