@@ -3,6 +3,7 @@ package com.example.android.popularmovies.services;
 import android.text.TextUtils;
 import android.util.Log;
 import com.example.android.popularmovies.ui.detailsscreens.Movie;
+import com.example.android.popularmovies.ui.detailsscreens.Trailer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,6 +27,9 @@ public class QueryUtils {
     private static final String LOG_TAG = QueryUtils.class.getName();
 
     // Constants referring to the name of the keys in the JSON objects
+    private static final String ID = "id";
+    private static final String KEY = "key";
+    private static final String NAME = "name";
     private static final String VOTE_AVERAGE = "vote_average";
     private static final String TITLE = "title";
     private static final String POSTER_PATH = "poster_path";
@@ -39,17 +43,25 @@ public class QueryUtils {
     private QueryUtils() {
     }
 
-    //Query the Movies database API
+    // Query the Movies database API for movies
     public static List<Movie> fetchMovieData(String requestUrl) {
+        return extractMoviesFromJSON(queryRequest(requestUrl));
+    }
+
+    // Query the Movie database API for trailers
+    public static List<Trailer> fetchTrailerData(String requestUrl) {
+        return extractTrailersFromJSON(queryRequest(requestUrl));
+    }
+
+
+    public static String queryRequest(String requestUrl){
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         // Create URL object
         URL url = createUrl(requestUrl);
-
         // Perform HTTP request to the URL and receive a JSON response back
         String jsonResponse = null;
         try {
@@ -58,7 +70,7 @@ public class QueryUtils {
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error closing input stream", e);
         }
-        return extractMoviesFromJSON(jsonResponse);
+        return jsonResponse;
     }
 
     // Returns new URL object from the given string URL.
@@ -142,6 +154,7 @@ public class QueryUtils {
             return null;
         }
 
+        int id = 0;
         float voteAverage = 0;
         String title = "";
         String posterPath = "";
@@ -157,32 +170,32 @@ public class QueryUtils {
             for (int i = 0; i < moviesArray.length(); i++) {
 
                 JSONObject currentMovie = moviesArray.optJSONObject(i);
-                
+
+                if (currentMovie.has(ID)) {
+                    // Extract the value for the key called "id"
+                    id = currentMovie.getInt(ID);
+                }
                 if (currentMovie.has(VOTE_AVERAGE)) {
                     // Extract the value for the key called "vote_average"
                     voteAverage = BigDecimal.valueOf(currentMovie.getDouble(VOTE_AVERAGE)).floatValue();
                 }
-
                 if (currentMovie.has(TITLE)) {
                     // Extract the value for the key called "title"
                     title = currentMovie.optString(TITLE);
                 }
-
                 if (currentMovie.has(POSTER_PATH)) {
                     // Extract the value for the key called "poster_path"
                     posterPath = currentMovie.optString(POSTER_PATH).substring(1);
                 }
-
                 if (currentMovie.has(OVERVIEW)) {
                     // Extract the value for the key called "overview"
                     overview = currentMovie.optString(OVERVIEW);
                 }
-
                 if (currentMovie.has(RELEASE_DATE)) {
                     // Extract the value for the key called "release_date"
                     releaseDate = currentMovie.optString(RELEASE_DATE);
                 }
-                Movie movie = new Movie(voteAverage, title, posterPath, overview, releaseDate);
+                Movie movie = new Movie(id, voteAverage, title, posterPath, overview, releaseDate);
                 movies.add(movie);
             }
         } catch (JSONException e) {
@@ -194,5 +207,53 @@ public class QueryUtils {
 
         // Return the list of movies :
         return movies;
+    }
+
+    /**
+     * Return a list of {@link Trailer} objects,
+     * that has been built up from parsing the given JSON response.
+     */
+    public static List<Trailer> extractTrailersFromJSON(String trailersJSON) {
+
+        if (TextUtils.isEmpty(trailersJSON)) {
+            return null;
+        }
+
+        String id = "";
+        String key = "";
+        String name = "";
+
+        List<Trailer> trailers = new ArrayList<>();
+
+        try {
+            JSONObject response = new JSONObject(trailersJSON);
+            JSONArray trailersArray = response.optJSONArray("results");
+
+            for (int i = 0; i < trailersArray.length(); i++) {
+
+                JSONObject currentTrailer = trailersArray.optJSONObject(i);
+                if (currentTrailer.has(ID)) {
+                    // Extract the value for the key called "id"
+                    id = currentTrailer.optString(ID);
+                }
+                if (currentTrailer.has(KEY)) {
+                    // Extract the value for the key called "key"
+                    key = currentTrailer.optString(KEY);
+                }
+                if (currentTrailer.has(NAME)) {
+                    // Extract the value for the key called "name"
+                    name = currentTrailer.optString(NAME);
+                }
+                Trailer trailer = new Trailer(id, key, name);
+                trailers.add(trailer);
+            }
+        } catch (JSONException e) {
+            // If an error is thrown when executing any of the above statements in the "try" block,
+            // catch the exception here, so the app doesn't crash.
+            // Print a log message with the message from the exception.
+            Log.e("QueryUtils", "Problem parsing the movie JSON results", e);
+        }
+        // Return the list of movies :
+        return trailers;
     }
 }

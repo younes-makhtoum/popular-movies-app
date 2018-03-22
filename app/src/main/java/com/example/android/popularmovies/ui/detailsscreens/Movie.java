@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 public class Movie implements Parcelable {
 
+    // ID of the movie
+    private int id;
+
     // User rating of the movie
     private float userRating;
 
@@ -24,12 +27,14 @@ public class Movie implements Parcelable {
     * Create a new Movie object.
     *
     * @param userRating is the rating of the movie, calculated from a vote average of users
+    * @param id is the id of the movie, that helps identify a single movie in the remote database
     * @param title is the title of the movie
     * @param poster is the link to the movie's poster
     * @param plotSynopsis is the plot synopsis providing a short summary of the movie
     * @param releaseDate is the release date of the movie
     * */
-    public Movie(float userRating, String title, String poster, String plotSynopsis, String releaseDate) {
+    public Movie(int id, float userRating, String title, String poster, String plotSynopsis, String releaseDate) {
+        this.id = id;
         this.userRating = userRating;
         this.title = title;
         this.poster = poster;
@@ -37,7 +42,11 @@ public class Movie implements Parcelable {
         this.releaseDate = releaseDate;
     }
 
-    // Getter methods for the movie objects variables
+    // Getter methods for the movie objects parameters
+    public int getId() {
+        return id;
+    }
+
     public float getUserRating() {
         return userRating;
     }
@@ -58,6 +67,7 @@ public class Movie implements Parcelable {
 
     // Write object values to parcel for storage
     public void writeToParcel(Parcel dest, int flags){
+        dest.writeInt(id);
         dest.writeFloat(userRating);
         dest.writeString(title);
         dest.writeString(poster);
@@ -67,6 +77,7 @@ public class Movie implements Parcelable {
 
     // Constructor used for parcel
     public Movie(Parcel parcel){
+        id = parcel.readInt();
         userRating = parcel.readFloat();
         title = parcel.readString();
         poster = parcel.readString();

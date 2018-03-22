@@ -27,6 +27,7 @@
 
     <!-- Content descriptions-->
     <string name="movie_poster">Movie poster</string>
+    <string name="trailer_thumbnail">Trailer thumbnail</string>
     <string name="error_message">Error message</string>
     <string name="coming_soon">Coming soon</string>
 

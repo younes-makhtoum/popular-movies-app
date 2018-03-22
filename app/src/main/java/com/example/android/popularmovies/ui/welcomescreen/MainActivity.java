@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.android.popularmovies.R;
+
 import com.example.android.popularmovies.databinding.ActivityMainBinding;
 import com.example.android.popularmovies.ui.detailsscreens.Movie;
 
@@ -24,7 +25,7 @@ import com.novoda.merlin.registerable.connection.Connectable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.android.popularmovies.services.UrlBuilder.queryUrlBuilder;
+import static com.example.android.popularmovies.services.UrlBuilder.moviesUrlBuilder;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Movie>> {
 
@@ -34,10 +35,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private List<Movie> moviesList = new ArrayList<>();
     private MovieAdapter movieAdapter;
 
-    private static final int MOVIE_LOADER_ID = 1;
-
-    // Used to prevent the sort method spinner listener to do a search at activity launch
-    private int checkSpinner = 0;
+    private static final int MOVIE_LOADER_ID = 101;
 
     // Store the binding
     private ActivityMainBinding binding;
@@ -53,24 +51,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // Inflate the content view
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-
+        
         // set GridLayoutManager with default vertical orientation and two columns to the RecyclerView
-        binding.recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
+        binding.recyclerMain.recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
 
         // Enable performance optimizations (significantly smoother scrolling),
         // by setting the following parameters on the RecyclerView
-        binding.recyclerView.setHasFixedSize(true);
-        binding.recyclerView.setItemViewCacheSize(20);
-        binding.recyclerView.setDrawingCacheEnabled(true);
-        binding.recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        binding.recyclerMain.recyclerView.setHasFixedSize(true);
+        binding.recyclerMain.recyclerView.setItemViewCacheSize(20);
+        binding.recyclerMain.recyclerView.setDrawingCacheEnabled(true);
+        binding.recyclerMain.recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
         // Add space between grid items in the RecyclerView,
         SpacesItemDecoration decoration = new SpacesItemDecoration(4);
-        binding.recyclerView.addItemDecoration(decoration);
+        binding.recyclerMain.recyclerView.addItemDecoration(decoration);
 
         movieAdapter = new MovieAdapter(this, moviesList);
 
-        binding.recyclerView.setAdapter(movieAdapter);
+        binding.recyclerMain.recyclerView.setAdapter(movieAdapter);
 
         merlin = new Merlin.Builder().withConnectableCallbacks().build(getApplicationContext());
         merlinsBeard = MerlinsBeard.from(getApplicationContext());
@@ -82,8 +80,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        binding.emptyView.setVisibility(View.GONE);
-                        doSearch();
+                        binding.recyclerMain.emptyView.setVisibility(View.GONE);
+                        queryMovies();
                     }
                 });
             }
@@ -128,17 +126,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     // No internet disclaimer
     private void noInternetDisclaimer(){
-        binding.recyclerView.setVisibility(View.GONE);
-        binding.emptyView.setImageResource(R.drawable.no_internet_escargot);
-        binding.emptyView.setVisibility(View.VISIBLE);
+        binding.recyclerMain.recyclerView.setVisibility(View.GONE);
+        binding.recyclerMain.emptyView.setImageResource(R.drawable.no_internet_escargot);
+        binding.recyclerMain.emptyView.setVisibility(View.VISIBLE);
     }
 
     // Launch the network connection to get the data from the Movie database API
-    private void doSearch() {
+    private void queryMovies() {
         LoaderManager loaderManager = getLoaderManager();
         loaderManager.initLoader(MOVIE_LOADER_ID, null, this);
-        binding.recyclerView.setVisibility(View.GONE);
-        binding.loadingSpinner.setVisibility(View.VISIBLE);
+        binding.recyclerMain.recyclerView.setVisibility(View.GONE);
+        binding.recyclerMain.loadingSpinner.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -150,13 +148,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 getString(R.string.settings_sort_by_default)
         );
 
-        return new MovieLoader(this, queryUrlBuilder(sortBy));
+        return new MovieLoader(this, moviesUrlBuilder(sortBy));
     }
 
     @Override
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movies) {
         // Hide loading indicator because the data has been loaded
-        binding.loadingSpinner.setVisibility(View.GONE);
+        binding.recyclerMain.loadingSpinner.setVisibility(View.GONE);
         // Clear the adapter of previous movies data
         movieAdapter.setMovieInfoList(null);
         // If there is a valid list of movies, then add them to the adapter's data set.
@@ -165,12 +163,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             movieAdapter.setMovieInfoList(movies);
             movieAdapter.notifyDataSetChanged();
             // Show the successful loading layout
-            binding.recyclerView.setVisibility(View.VISIBLE);
+            binding.recyclerMain.recyclerView.setVisibility(View.VISIBLE);
             moviesList = new ArrayList<>(movies);
         }
         else {
             // Set empty view to display the "no results found" image
-            binding.emptyView.setImageResource(R.drawable.sorry_no_results_found);
+            binding.recyclerMain.emptyView.setImageResource(R.drawable.sorry_no_results_found);
         }
     }
 

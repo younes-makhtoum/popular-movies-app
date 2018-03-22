@@ -16,7 +16,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.android.popularmovies.services.UrlBuilder.posterUrlBuilder;
+import static com.example.android.popularmovies.services.UrlBuilder.moviePosterUrlBuilder;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder> {
 
@@ -54,7 +54,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
         Movie currentMovie = moviesList.get(position);
 
         Picasso.with(context)
-                .load(posterUrlBuilder(currentMovie.getPoster()))
+                .load(moviePosterUrlBuilder(currentMovie.getPoster()))
                 .placeholder(R.drawable.movie_poster_not_available)
                 .into(holder.posterImageView);
 

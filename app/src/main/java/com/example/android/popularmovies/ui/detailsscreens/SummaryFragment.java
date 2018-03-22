@@ -10,7 +10,7 @@ import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.databinding.FragmentSummaryBinding;
 import com.squareup.picasso.Picasso;
 
-import static com.example.android.popularmovies.services.UrlBuilder.thumbnailUrlBuilder;
+import static com.example.android.popularmovies.services.UrlBuilder.movieThumbnailUrlBuilder;
 
 public class SummaryFragment extends Fragment {
 
@@ -30,7 +30,7 @@ public class SummaryFragment extends Fragment {
         selectedMovie = ((DetailActivity)this.getActivity()).getSelectedMovie();
 
         Picasso.with(getContext())
-                .load(thumbnailUrlBuilder(selectedMovie.getPoster()))
+                .load(movieThumbnailUrlBuilder(selectedMovie.getPoster()))
                 .into(binding.moviePosterDetail);
 
         populateUI();

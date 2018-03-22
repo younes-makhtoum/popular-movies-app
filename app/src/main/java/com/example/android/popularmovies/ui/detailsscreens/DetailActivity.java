@@ -42,7 +42,6 @@ public class DetailActivity extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
     }
-
     public Movie getSelectedMovie(){
         return this.selectedMovie;
     }
