@@ -13,6 +13,7 @@ public class UrlBuilder {
     private static final String YOUTUBE_IMAGE_AUTHORITY = "img.youtube.com";
     private static final String PRE_PATH_MOVIE = "movie";
     private static final String PRE_PATH_VIDEO = "videos";
+    private static final String PRE_PATH_REVIEW = "reviews";
     private static final String PRE_PATH_VI = "vi";
     private static final String PRE_PATH_3 = "3";
     private static final String PRE_PATH_T = "t";
@@ -49,6 +50,21 @@ public class UrlBuilder {
                 .appendPath(PRE_PATH_MOVIE)
                 .appendPath(String.valueOf(movieId))
                 .appendPath(PRE_PATH_VIDEO)
+                .appendQueryParameter(API_KEY, KEY);
+
+        return uriBuilder.toString();
+    }
+
+    // URL builder to query movie review in the detail screen
+    public static String reviewsUrlBuilder(int movieId) {
+
+        Uri.Builder uriBuilder = new Uri.Builder();
+        uriBuilder.scheme(SCHEME)
+                .authority(API_AUTHORITY)
+                .appendPath(PRE_PATH_3)
+                .appendPath(PRE_PATH_MOVIE)
+                .appendPath(String.valueOf(movieId))
+                .appendPath(PRE_PATH_REVIEW)
                 .appendQueryParameter(API_KEY, KEY);
 
         return uriBuilder.toString();

@@ -6,7 +6,7 @@
     <dimen name="half_margin">8dp</dimen>
 
     <!-- Text sizes -->
-   <dimen name="label_size">16sp</dimen>
-   <dimen name="data_size">20sp</dimen>
+   <dimen name="label_size">24sp</dimen>
+   <dimen name="data_size">16sp</dimen>
 
 </resources>

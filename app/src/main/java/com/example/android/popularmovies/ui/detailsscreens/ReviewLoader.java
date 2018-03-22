@@ -6,22 +6,22 @@ import com.example.android.popularmovies.services.QueryUtils;
 
 import java.util.List;
 
-public class TrailerLoader extends android.support.v4.content.AsyncTaskLoader<List<Trailer>> {
+public class ReviewLoader extends android.support.v4.content.AsyncTaskLoader<List<Review>> {
 
     // Tag for log messages
-    private static final String LOG_TAG = com.example.android.popularmovies.ui.detailsscreens.TrailerLoader.class.getName();
+    private static final String LOG_TAG = com.example.android.popularmovies.ui.detailsscreens.ReviewLoader.class.getName();
 
     // Query URL
     private String mUrl;
 
     /**
-     * Constructs a new {@link com.example.android.popularmovies.ui.detailsscreens.TrailerLoader}.
+     * Constructs a new {@link com.example.android.popularmovies.ui.detailsscreens.ReviewLoader}.
      *
      * @param context of the activity
      * @param url to load data from
      */
 
-    public TrailerLoader(Context context, String url) {
+    public ReviewLoader(Context context, String url) {
         super(context);
         mUrl = url;
     }
@@ -32,11 +32,11 @@ public class TrailerLoader extends android.support.v4.content.AsyncTaskLoader<Li
     }
 
     @Override
-    public List<Trailer> loadInBackground() {
+    public List<Review> loadInBackground() {
         if (mUrl == null) {
             return null;
         }
         // Perform the network request, parse the response, and extract a list of movies.
-        return QueryUtils.fetchTrailerData(mUrl);
+        return QueryUtils.fetchReviewData(mUrl);
     }
 }

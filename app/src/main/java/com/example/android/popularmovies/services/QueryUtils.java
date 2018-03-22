@@ -3,6 +3,7 @@ package com.example.android.popularmovies.services;
 import android.text.TextUtils;
 import android.util.Log;
 import com.example.android.popularmovies.ui.detailsscreens.Movie;
+import com.example.android.popularmovies.ui.detailsscreens.Review;
 import com.example.android.popularmovies.ui.detailsscreens.Trailer;
 
 import org.json.JSONArray;
@@ -28,13 +29,16 @@ public class QueryUtils {
 
     // Constants referring to the name of the keys in the JSON objects
     private static final String ID = "id";
+    private static final String URL = "url";
     private static final String KEY = "key";
     private static final String NAME = "name";
-    private static final String VOTE_AVERAGE = "vote_average";
     private static final String TITLE = "title";
-    private static final String POSTER_PATH = "poster_path";
+    private static final String AUTHOR = "author";
+    private static final String CONTENT = "content";
     private static final String OVERVIEW = "overview";
+    private static final String POSTER_PATH = "poster_path";
     private static final String RELEASE_DATE = "release_date";
+    private static final String VOTE_AVERAGE = "vote_average";
 
     /**
      * Create a private constructor,
@@ -52,8 +56,12 @@ public class QueryUtils {
     public static List<Trailer> fetchTrailerData(String requestUrl) {
         return extractTrailersFromJSON(queryRequest(requestUrl));
     }
-
-
+    
+    // Query the Movie database API for reviews
+    public static List<Review> fetchReviewData(String requestUrl) {
+        return extractReviewsFromJSON(queryRequest(requestUrl));
+    }
+    
     public static String queryRequest(String requestUrl){
         try {
             Thread.sleep(2000);
@@ -255,5 +263,58 @@ public class QueryUtils {
         }
         // Return the list of movies :
         return trailers;
+    }
+
+    /**
+     * Return a list of {@link Review} objects,
+     * that has been built up from parsing the given JSON response.
+     */
+    public static List<Review> extractReviewsFromJSON(String reviewsJSON) {
+
+        if (TextUtils.isEmpty(reviewsJSON)) {
+            return null;
+        }
+
+        String id = "";
+        String url = "";
+        String author = "";
+        String content = "";
+
+        List<Review> reviews = new ArrayList<>();
+
+        try {
+            JSONObject response = new JSONObject(reviewsJSON);
+            JSONArray reviewsArray = response.optJSONArray("results");
+
+            for (int i = 0; i < reviewsArray.length(); i++) {
+
+                JSONObject currentReview = reviewsArray.optJSONObject(i);
+                if (currentReview.has(ID)) {
+                    // Extract the value for the key called "name"
+                    id = currentReview.optString(ID);
+                }
+                if (currentReview.has(URL)) {
+                    // Extract the value for the key called "name"
+                    url = currentReview.optString(URL);
+                }
+                if (currentReview.has(AUTHOR)) {
+                    // Extract the value for the key called "id"
+                    author = currentReview.optString(AUTHOR);
+                }
+                if (currentReview.has(CONTENT)) {
+                    // Extract the value for the key called "key"
+                    content = currentReview.optString(CONTENT);
+                }
+                Review review = new Review(id, url, author, content);
+                reviews.add(review);
+            }
+        } catch (JSONException e) {
+            // If an error is thrown when executing any of the above statements in the "try" block,
+            // catch the exception here, so the app doesn't crash.
+            // Print a log message with the message from the exception.
+            Log.e("QueryUtils", "Problem parsing the movie JSON results", e);
+        }
+        // Return the list of movies :
+        return reviews;
     }
 }
