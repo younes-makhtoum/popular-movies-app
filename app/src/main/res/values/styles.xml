@@ -13,20 +13,40 @@
         <item name="android:textColorAlertDialogListItem">@color/pureWhite</item>
     </style>
 
-    <style name="Label">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="MovieTitle">
+        <item name="android:textSize">@dimen/movie_title_size</item>
+        <item name="android:textColor">@color/lightRed</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">@dimen/label_size</item>
-        <item name="android:textColor">@color/lightBlue</item>
+        <item name="android:textAlignment">center</item>
     </style>
 
-    <style name="Data">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">@dimen/half_margin</item>
-        <item name="android:textSize">@dimen/data_size</item>
+    <style name="MovieReleaseDate">
+        <item name="android:textSize">@dimen/movie_release_date_size</item>
+        <item name="android:textColor">@color/pureYellow</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="MovieUserRating">
+        <item name="android:textSize">@dimen/movie_user_rating_size</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="MovieSummary">
+        <item name="android:textSize">@dimen/movie_summary_size</item>
         <item name="android:textColor">@color/pureWhite</item>
+    </style>
+
+    <style name="TrailerTitle">
+        <item name="android:textSize">@dimen/trailer_title_size</item>
+        <item name="android:textColor">@color/lightRed</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ReviewAuthor">
+        <item name="android:textSize">@dimen/review_author_size</item>
+        <item name="android:textColor">@color/lightRed</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
 </resources>

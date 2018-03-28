@@ -7,6 +7,10 @@
 
     <!-- Text colors-->
     <color name="pureWhite">#FFFFFF</color>
+    <color name="pureYellow">#FFEB3B</color>
     <color name="lightBlue">#81D4FA</color>
     <color name="lightRed">#FFCDD2</color>
+
+
+
 </resources>

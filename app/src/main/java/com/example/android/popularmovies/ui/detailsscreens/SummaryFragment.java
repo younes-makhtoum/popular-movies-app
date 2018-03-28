@@ -64,35 +64,31 @@ public class SummaryFragment extends Fragment {
     private void populateUI() {
 
         if(!selectedMovie.getTitle().isEmpty()) {
-            binding.titleData.setText(selectedMovie.getTitle());
+            binding.title.setText(selectedMovie.getTitle());
         }
         else {
-            binding.titleLabel.setVisibility(View.GONE);
-            binding.titleData.setVisibility(View.GONE);
+            binding.title.setVisibility(View.GONE);
         }
 
         if(!selectedMovie.getReleaseDate().isEmpty()) {
-            binding.releaseDateData.setText(selectedMovie.getReleaseDate());
+            binding.releaseDate.setText(selectedMovie.getReleaseDate().substring(0,4));
         }
         else {
-            binding.releaseDateLabel.setVisibility(View.GONE);
-            binding.releaseDateData.setVisibility(View.GONE);
+            binding.releaseDate.setVisibility(View.GONE);
         }
 
         if(!String.valueOf(selectedMovie.getUserRating()).isEmpty()) {
-            binding.userRatingData.setText(String.valueOf(selectedMovie.getUserRating()));
+            binding.userRating.setText(String.valueOf(selectedMovie.getUserRating()));
         }
         else {
-            binding.userRatingLabel.setVisibility(View.GONE);
-            binding.userRatingData.setVisibility(View.GONE);
+            binding.userRating.setVisibility(View.GONE);
         }
 
         if(!selectedMovie.getPlotSynopsis().isEmpty()) {
-            binding.plotSynopsisData.setText(selectedMovie.getPlotSynopsis());
+            binding.plotSynopsis.setText(selectedMovie.getPlotSynopsis());
         }
         else {
-            binding.plotSynopsisLabel.setVisibility(View.GONE);
-            binding.plotSynopsisData.setVisibility(View.GONE);
+            binding.plotSynopsis.setVisibility(View.GONE);
         }
     }
 }

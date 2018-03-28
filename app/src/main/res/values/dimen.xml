@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Views margins -->
-   <dimen name="large_margin">16dp</dimen>
+        <!-- Views margins -->
+    <dimen name="large_margin">16dp</dimen>
     <dimen name="half_margin">8dp</dimen>
 
-    <!-- Text sizes -->
-   <dimen name="label_size">24sp</dimen>
-   <dimen name="data_size">16sp</dimen>
+        <!-- Text sizes -->
+    <dimen name="movie_release_date_size">24sp</dimen>
+    <dimen name="movie_user_rating_size">18sp</dimen>
+    <dimen name="movie_title_size">24sp</dimen>
+    <dimen name="movie_summary_size">16sp</dimen>
+    <dimen name="trailer_title_size">18sp</dimen>
+    <dimen name="review_author_size">18sp</dimen>
 
 </resources>
