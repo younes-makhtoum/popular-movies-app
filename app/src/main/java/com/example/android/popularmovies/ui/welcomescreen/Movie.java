@@ -1,4 +1,4 @@
-package com.example.android.popularmovies.ui.detailsscreens;
+package com.example.android.popularmovies.ui.welcomescreen;
 
 import android.os.Parcel;
 import android.os.Parcelable;

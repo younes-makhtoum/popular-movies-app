@@ -16,7 +16,6 @@ import android.view.View;
 import com.example.android.popularmovies.R;
 
 import com.example.android.popularmovies.databinding.ActivityMainBinding;
-import com.example.android.popularmovies.ui.detailsscreens.Movie;
 
 import com.novoda.merlin.Merlin;
 import com.novoda.merlin.MerlinsBeard;
@@ -127,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     // No internet disclaimer
     private void noInternetDisclaimer(){
         binding.recyclerMain.recyclerView.setVisibility(View.GONE);
-        binding.recyclerMain.emptyView.setImageResource(R.drawable.no_internet_escargot);
+        binding.recyclerMain.emptyView.setImageResource(R.drawable.no_internet_connection);
         binding.recyclerMain.emptyView.setVisibility(View.VISIBLE);
     }
 
@@ -168,7 +167,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         else {
             // Set empty view to display the "no results found" image
-            binding.recyclerMain.emptyView.setImageResource(R.drawable.sorry_no_results_found);
+            binding.recyclerMain.emptyView.setImageResource(R.drawable.no_results);
+            binding.recyclerMain.emptyView.setVisibility(View.VISIBLE);
         }
     }
 

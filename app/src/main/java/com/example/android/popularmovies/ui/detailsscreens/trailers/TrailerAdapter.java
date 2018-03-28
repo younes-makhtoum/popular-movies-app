@@ -1,4 +1,4 @@
-package com.example.android.popularmovies.ui.detailsscreens;
+package com.example.android.popularmovies.ui.detailsscreens.trailers;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.example.android.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.android.popularmovies.services.UrlBuilder.trailerThumbnailUrlBuilder;
@@ -22,10 +21,10 @@ import static com.example.android.popularmovies.services.UrlBuilder.trailerThumb
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MyViewHolder> {
 
     // Tag for log messages
-    public static final String LOG_TAG = com.example.android.popularmovies.ui.detailsscreens.TrailerAdapter.class.getName();
+    public static final String LOG_TAG = TrailerAdapter.class.getName();
 
     private final Context context;
-    private List<Trailer> trailersList = new ArrayList<>();
+    private List<Trailer> trailersList;
 
     public TrailerAdapter(Context context, List<Trailer> trailersList) {
         this.context = context;
@@ -60,6 +59,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MyViewHo
 
         Picasso.with(context)
                 .load(trailerThumbnailUrlBuilder(currentTrailer.getKey()))
+                .placeholder(R.drawable.thumbnail_place_holder)
                 .into(holder.trailerImageView);
 
         // implement setOnClickListener event on item view.

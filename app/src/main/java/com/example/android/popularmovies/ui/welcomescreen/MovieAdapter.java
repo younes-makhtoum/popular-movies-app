@@ -10,10 +10,8 @@ import android.widget.ImageView;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.ui.detailsscreens.DetailActivity;
-import com.example.android.popularmovies.ui.detailsscreens.Movie;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.android.popularmovies.services.UrlBuilder.moviePosterUrlBuilder;
@@ -24,7 +22,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
     public static final String LOG_TAG = MovieAdapter.class.getName();
 
     private final Context context;
-    private List<Movie> moviesList = new ArrayList<>();
+    private List<Movie> moviesList;
 
     public MovieAdapter(Context context, List<Movie> moviesList) {
         this.context = context;
@@ -55,7 +53,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
 
         Picasso.with(context)
                 .load(moviePosterUrlBuilder(currentMovie.getPoster()))
-                .placeholder(R.drawable.movie_poster_not_available)
+                .placeholder(R.drawable.thumbnail_place_holder)
                 .into(holder.posterImageView);
 
         // implement setOnClickListener event on item view.

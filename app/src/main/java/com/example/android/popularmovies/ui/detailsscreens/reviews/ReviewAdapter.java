@@ -1,4 +1,4 @@
-package com.example.android.popularmovies.ui.detailsscreens;
+package com.example.android.popularmovies.ui.detailsscreens.reviews;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -12,16 +12,15 @@ import android.widget.TextView;
 
 import com.example.android.popularmovies.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MyViewHolder> {
 
     // Tag for log messages
-    public static final String LOG_TAG = com.example.android.popularmovies.ui.detailsscreens.ReviewAdapter.class.getName();
+    public static final String LOG_TAG = ReviewAdapter.class.getName();
 
     private final Context context;
-    private List<Review> reviewsList = new ArrayList<>();
+    private List<Review> reviewsList;
 
     public ReviewAdapter(Context context, List<Review> reviewsList) {
         this.context = context;

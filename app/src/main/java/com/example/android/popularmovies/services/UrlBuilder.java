@@ -8,6 +8,7 @@ public class UrlBuilder {
     public static final String LOG_TAG = UrlBuilder.class.getName();
 
     private static final String SCHEME = "https";
+    private static final String SITE_AUTHORITY = "www.themoviedb.org";
     private static final String API_AUTHORITY = "api.themoviedb.org";
     private static final String IMAGE_AUTHORITY = "image.tmdb.org";
     private static final String YOUTUBE_IMAGE_AUTHORITY = "img.youtube.com";
@@ -24,7 +25,7 @@ public class UrlBuilder {
     private static final String API_KEY = "api_key";
 
     // Fill in your personal API key in this constant :
-    private static final String KEY = "7053adcd96687589ce3f27f63df3325f";
+    private static final String KEY = "";
 
     // URL builder to query movies list in the welcome screen
     public static String moviesUrlBuilder(String sortingSelection) {
@@ -36,6 +37,18 @@ public class UrlBuilder {
                 .appendPath(PRE_PATH_MOVIE)
                 .appendPath(sortingSelection)
                 .appendQueryParameter(API_KEY, KEY);
+
+        return uriBuilder.toString();
+    }
+
+    // URL builder to open movie url from the detail screen
+    public static String movieUrlBuilder(int movieId) {
+
+        Uri.Builder uriBuilder = new Uri.Builder();
+        uriBuilder.scheme(SCHEME)
+                .authority(SITE_AUTHORITY)
+                .appendPath(PRE_PATH_MOVIE)
+                .appendPath(String.valueOf(movieId));
 
         return uriBuilder.toString();
     }

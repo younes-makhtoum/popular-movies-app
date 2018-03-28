@@ -1,9 +1,11 @@
-package com.example.android.popularmovies.ui.detailsscreens;
+package com.example.android.popularmovies.ui.detailsscreens.trailers;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,9 @@ import android.view.ViewGroup;
 import com.example.android.popularmovies.R;
 
 import com.example.android.popularmovies.databinding.FragmentTrailersBinding;
+import com.example.android.popularmovies.ui.detailsscreens.DetailActivity;
+import com.example.android.popularmovies.ui.welcomescreen.Movie;
+import com.novoda.merlin.MerlinsBeard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +38,20 @@ public class TrailersFragment extends Fragment implements android.support.v4.app
     private TrailerAdapter trailerAdapter;
 
     private static final int TRAILER_LOADER_ID = 201;
+
+    private MerlinsBeard merlinsBeard;
+
+    private boolean dataIsLoaded = false;
+    private boolean noDataFound = false;
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser & !dataIsLoaded) {
+            loadData();
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,9 +79,12 @@ public class TrailersFragment extends Fragment implements android.support.v4.app
 
         selectedMovie = ((DetailActivity)this.getActivity()).getSelectedMovie();
 
-        // Launch the network connection to get the data from the Movie database API
-        android.support.v4.app.LoaderManager loaderManager = getLoaderManager();
-        loaderManager.initLoader(TRAILER_LOADER_ID, null, this);
+        // Used to check the instant internet connection status
+        merlinsBeard = MerlinsBeard.from(getContext());
+
+        if(getUserVisibleHint()){ // fragment is visible
+            loadData();
+        }
 
         return rootView;
     }
@@ -73,6 +95,17 @@ public class TrailersFragment extends Fragment implements android.support.v4.app
         selectedMovie = ((DetailActivity)this.getActivity()).getSelectedMovie();
     }
 
+    // Launch the network connection to get the data from the Movie database API
+    public void queryTrailers() {
+        if (!dataIsLoaded & !noDataFound) {
+            LoaderManager loaderManager = getLoaderManager();
+            loaderManager.initLoader(TRAILER_LOADER_ID, null, this);
+            binding.recyclerTrailers.recyclerView.setVisibility(View.GONE);
+            binding.recyclerTrailers.emptyView.setVisibility(View.GONE);
+            binding.recyclerTrailers.loadingSpinner.setVisibility(View.VISIBLE);
+        }
+    }
+
     @Override
     public android.support.v4.content.Loader<List<Trailer>> onCreateLoader(int id, Bundle args) {
         // Create a new loader for the given URL
@@ -81,6 +114,7 @@ public class TrailersFragment extends Fragment implements android.support.v4.app
 
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<List<Trailer>> loader, List<Trailer> trailers) {
+        Log.v(LOG_TAG,"LOG// onLoadFinished reached");
         // Hide loading indicator because the data has been loaded
         binding.recyclerTrailers.loadingSpinner.setVisibility(View.GONE);
         // Clear the adapter of previous movies data
@@ -88,15 +122,20 @@ public class TrailersFragment extends Fragment implements android.support.v4.app
         // If there is a valid list of movies, then add them to the adapter's data set.
         // This will trigger the GridView to update itself.
         if (trailers != null && !trailers.isEmpty()) {
+            Log.v(LOG_TAG,"data is loading");
             trailerAdapter.setTrailerInfoList(trailers);
             trailerAdapter.notifyDataSetChanged();
             // Show the successful loading layout
             binding.recyclerTrailers.recyclerView.setVisibility(View.VISIBLE);
             trailersList = new ArrayList<>(trailers);
+            dataIsLoaded = true;
         }
         else {
+            Log.v(LOG_TAG,"LOG// data is missing");
             // Set empty view to display the "no results found" image
-            binding.recyclerTrailers.emptyView.setImageResource(R.drawable.sorry_no_results_found);
+            binding.recyclerTrailers.emptyView.setImageResource(R.drawable.no_results);
+            binding.recyclerTrailers.emptyView.setVisibility(View.VISIBLE);
+            noDataFound = true;
         }
     }
 
@@ -104,5 +143,22 @@ public class TrailersFragment extends Fragment implements android.support.v4.app
     public void onLoaderReset(android.support.v4.content.Loader<List<Trailer>> loader) {
         //Loader reset, so we can clear out our existing data.
         trailerAdapter.setTrailerInfoList(null);
+    }
+
+    // Check connectivity and take appropriate display action
+    private void loadData(){
+        if(!merlinsBeard.isConnected()) {
+            noInternetDisclaimer();
+        } else {
+            Log.v(LOG_TAG, "LOG// We have internet now, let's go !");
+            queryTrailers();
+        }
+    }
+
+    // No internet disclaimer
+    private void noInternetDisclaimer(){
+        binding.recyclerTrailers.recyclerView.setVisibility(View.GONE);
+        binding.recyclerTrailers.emptyView.setImageResource(R.drawable.no_internet_connection);
+        binding.recyclerTrailers.emptyView.setVisibility(View.VISIBLE);
     }
 }

@@ -2,9 +2,9 @@ package com.example.android.popularmovies.services;
 
 import android.text.TextUtils;
 import android.util.Log;
-import com.example.android.popularmovies.ui.detailsscreens.Movie;
-import com.example.android.popularmovies.ui.detailsscreens.Review;
-import com.example.android.popularmovies.ui.detailsscreens.Trailer;
+import com.example.android.popularmovies.ui.welcomescreen.Movie;
+import com.example.android.popularmovies.ui.detailsscreens.reviews.Review;
+import com.example.android.popularmovies.ui.detailsscreens.trailers.Trailer;
 
 import org.json.JSONArray;
 import org.json.JSONException;

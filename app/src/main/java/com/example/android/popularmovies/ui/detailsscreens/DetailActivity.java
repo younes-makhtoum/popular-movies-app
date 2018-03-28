@@ -5,8 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.ui.detailsscreens.reviews.ReviewsFragment;
+import com.example.android.popularmovies.ui.detailsscreens.trailers.TrailersFragment;
+import com.example.android.popularmovies.ui.welcomescreen.Movie;
+import com.novoda.merlin.Merlin;
+import com.novoda.merlin.registerable.connection.Connectable;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -15,6 +21,9 @@ public class DetailActivity extends AppCompatActivity {
 
     // Declare an instance of Movie
     private Movie selectedMovie;
+
+    // Used to check the internet connection changes
+    Merlin merlin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +40,7 @@ public class DetailActivity extends AppCompatActivity {
 
         // Find the view pager that will allow the user to swipe between fragments
         ViewPager viewPager = findViewById(R.id.view_pager);
+        viewPager.setId(R.id.view_pager);
 
         // Create an adapter that knows which fragment should be shown on each page
         DetailAdapter detailAdapter = new DetailAdapter(getSupportFragmentManager());
@@ -41,7 +51,48 @@ public class DetailActivity extends AppCompatActivity {
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        merlin = new Merlin.Builder().withConnectableCallbacks().build(this);
+
+        // Internet status activation is monitored with this listener registration
+        merlin.registerConnectable(new Connectable() {
+            @Override
+            public void onConnect() {
+
+                TrailersFragment trailersFragment = (TrailersFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.view_pager + ":" + 1);
+                ReviewsFragment reviewsFragment = (ReviewsFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.view_pager + ":" + 2);
+
+                Log.v(LOG_TAG,"LOG// trailersFragment is : " + trailersFragment);
+                Log.v(LOG_TAG,"LOG// reviewsFragment is : " + reviewsFragment);
+
+                if (trailersFragment.isAdded()) {
+                    Log.v(LOG_TAG,"LOG// trailersFragment isAdded");
+                    trailersFragment.queryTrailers();
+                }
+                if (reviewsFragment != null) {
+                    if (reviewsFragment.isAdded()) {
+                    Log.v(LOG_TAG,"LOG// reviewsFragment isAdded");
+                    reviewsFragment.queryReviews();
+                    }
+                }
+            }
+        });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Bind the merlin listener so that internet status changes are monitored
+        merlin.bind();
+    }
+
+    @Override
+    protected void onPause() {
+        // Unbind the merlin listener as the activity is on pause
+        merlin.unbind();
+        super.onPause();
+    }
+
     public Movie getSelectedMovie(){
         return this.selectedMovie;
     }

@@ -1,4 +1,4 @@
-package com.example.android.popularmovies.ui.detailsscreens;
+package com.example.android.popularmovies.ui.detailsscreens.trailers;
 
 public class Trailer {
 
