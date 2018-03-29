@@ -45,7 +45,7 @@
 
     <style name="ReviewAuthor">
         <item name="android:textSize">@dimen/review_author_size</item>
-        <item name="android:textColor">@color/lightRed</item>
+        <item name="android:textColor">@color/pureYellow</item>
         <item name="android:textStyle">bold</item>
     </style>
 

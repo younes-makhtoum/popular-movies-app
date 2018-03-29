@@ -31,6 +31,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     // Tag for log messages
     public static final String LOG_TAG = MainActivity.class.getName();
 
+    private String sortBy = "";
+
+
     private List<Movie> moviesList = new ArrayList<>();
     private MovieAdapter movieAdapter;
 
@@ -47,6 +50,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        sortBy = sharedPrefs.getString(
+                getString(R.string.settings_sort_by_key),
+                getString(R.string.settings_sort_by_default)
+        );
+
+        if (sortBy.equals(getString(R.string.settings_sort_by_most_popular_value))) {
+            setTitle(getString(R.string.settings_sort_by_most_popular_label) + getString(R.string.movies));
+        } else { setTitle(getString(R.string.settings_sort_by_top_rated_label) + getString(R.string.movies)); }
 
         // Inflate the content view
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
@@ -141,12 +154,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
         // Create a new loader for the given URL
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String sortBy = sharedPrefs.getString(
-                getString(R.string.settings_sort_by_key),
-                getString(R.string.settings_sort_by_default)
-        );
-
         return new MovieLoader(this, moviesUrlBuilder(sortBy));
     }
 

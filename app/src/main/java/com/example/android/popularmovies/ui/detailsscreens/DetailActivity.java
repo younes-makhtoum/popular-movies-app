@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.ui.detailsscreens.reviews.ReviewsFragment;
 import com.example.android.popularmovies.ui.detailsscreens.trailers.TrailersFragment;
 import com.example.android.popularmovies.ui.welcomescreen.Movie;
+import com.example.android.popularmovies.ui.welcomescreen.SettingsActivity;
 import com.novoda.merlin.Merlin;
 import com.novoda.merlin.registerable.connection.Connectable;
 
@@ -36,7 +39,7 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         selectedMovie  = intent.getParcelableExtra("Movie");
 
-        setTitle(selectedMovie.getTitle());
+        setTitle("");
 
         // Find the view pager that will allow the user to swipe between fragments
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -91,6 +94,23 @@ public class DetailActivity extends AppCompatActivity {
         // Unbind the merlin listener as the activity is on pause
         merlin.unbind();
         super.onPause();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public Movie getSelectedMovie(){

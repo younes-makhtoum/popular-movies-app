@@ -11,6 +11,6 @@
     <dimen name="movie_title_size">24sp</dimen>
     <dimen name="movie_summary_size">16sp</dimen>
     <dimen name="trailer_title_size">18sp</dimen>
-    <dimen name="review_author_size">18sp</dimen>
+    <dimen name="review_author_size">20sp</dimen>
 
 </resources>
