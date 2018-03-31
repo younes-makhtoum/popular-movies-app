@@ -63,7 +63,7 @@
                 android:layout_marginStart="32dp"
                 android:background="@color/colorPrimaryDark"
                 android:contentDescription="@string/star_button"
-                android:src="@android:drawable/btn_star"
+                android:src="@drawable/star_button"
                 app:layout_constraintBottom_toBottomOf="@+id/movie_poster_detail"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/movie_poster_detail" />

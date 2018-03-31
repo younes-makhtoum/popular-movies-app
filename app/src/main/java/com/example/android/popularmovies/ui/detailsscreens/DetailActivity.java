@@ -65,11 +65,7 @@ public class DetailActivity extends AppCompatActivity {
                 TrailersFragment trailersFragment = (TrailersFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.view_pager + ":" + 1);
                 ReviewsFragment reviewsFragment = (ReviewsFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.view_pager + ":" + 2);
 
-                Log.v(LOG_TAG,"LOG// trailersFragment is : " + trailersFragment);
-                Log.v(LOG_TAG,"LOG// reviewsFragment is : " + reviewsFragment);
-
                 if (trailersFragment.isAdded()) {
-                    Log.v(LOG_TAG,"LOG// trailersFragment isAdded");
                     trailersFragment.queryTrailers();
                 }
                 if (reviewsFragment != null) {

@@ -30,4 +30,10 @@
     <string name="error_message">Error message</string>
     <string name="star_button">Star button</string>
 
+    <!-- Toast messages for favorite saving feature -->
+    <string name="save_movie_as_favorite_succeeded">Movie saved as favorite</string>
+    <string name="save_movie_as_favorite_failed">Failed to save movie</string>
+    <string name="remove_movie_from_favorites_succeeded">Movie removed from favorites</string>
+    <string name="remove_movie_from_favorites_failed">Failed to remove movie from favorites</string>
+
 </resources>

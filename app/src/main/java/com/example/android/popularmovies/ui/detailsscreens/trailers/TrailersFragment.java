@@ -114,7 +114,6 @@ public class TrailersFragment extends Fragment implements android.support.v4.app
 
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<List<Trailer>> loader, List<Trailer> trailers) {
-        Log.v(LOG_TAG,"LOG// onLoadFinished reached");
         // Hide loading indicator because the data has been loaded
         binding.recyclerTrailers.loadingSpinner.setVisibility(View.GONE);
         // Clear the adapter of previous movies data
@@ -131,7 +130,6 @@ public class TrailersFragment extends Fragment implements android.support.v4.app
             dataIsLoaded = true;
         }
         else {
-            Log.v(LOG_TAG,"LOG// data is missing");
             // Set empty view to display the "no results found" image
             binding.recyclerTrailers.emptyView.setImageResource(R.drawable.no_results);
             binding.recyclerTrailers.emptyView.setVisibility(View.VISIBLE);
@@ -150,7 +148,6 @@ public class TrailersFragment extends Fragment implements android.support.v4.app
         if(!merlinsBeard.isConnected()) {
             noInternetDisclaimer();
         } else {
-            Log.v(LOG_TAG, "LOG// We have internet now, let's go !");
             queryTrailers();
         }
     }
