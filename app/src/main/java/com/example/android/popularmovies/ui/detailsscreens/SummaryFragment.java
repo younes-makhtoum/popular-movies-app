@@ -31,7 +31,7 @@ public class SummaryFragment extends Fragment {
     // Store the binding
     private FragmentSummaryBinding binding;
 
-    // Declare an instance of Movie
+    // Movie object instance declaration to handle the received parcelable
     private Movie selectedMovie;
 
     // Tells whether the selected movie is among the favorites
@@ -63,7 +63,6 @@ public class SummaryFragment extends Fragment {
 
         if (cursor == null) {
             Log.e(LOG_TAG, "Error in querying the movie database");
-
             // If the cursor is empty, the provider found no matches
         } else if (cursor.getCount() < 1) {
             isFavorite = false;
@@ -73,6 +72,7 @@ public class SummaryFragment extends Fragment {
             binding.starButton.setSelected(true);
         }
 
+        assert cursor != null;
         cursor.close();
 
         binding.moviePosterDetail.setOnClickListener(new View.OnClickListener() {
@@ -107,7 +107,7 @@ public class SummaryFragment extends Fragment {
         return rootView;
     }
 
-    // Populate the summary screen with detailed data about the selected movie.
+    // Helper method to populate the summary screen with detailed data about the selected movie.
     private void populateUI() {
 
         if(!selectedMovie.getTitle().isEmpty()) {
@@ -139,7 +139,7 @@ public class SummaryFragment extends Fragment {
         }
     }
 
-    // Save movie as a favorite
+    // Save a movie as favorite
     private void saveMovieInFavorites() {
 
         ContentValues values = new ContentValues();
@@ -162,7 +162,7 @@ public class SummaryFragment extends Fragment {
         }
     }
 
-    // Remove movie from favorites
+    // Remove a movie from favorites
     private void removeMovieFromFavorites() {
 
         String selectionClause = MovieEntry.COLUMN_MOVIE_ID + " = ?";

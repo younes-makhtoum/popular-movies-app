@@ -24,9 +24,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
     private final Context context;
     private List<Movie> moviesList;
 
-    public MovieAdapter(Context context, List<Movie> moviesList) {
+    public MovieAdapter(Context context) {
         this.context = context;
-        this.moviesList = moviesList;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -80,7 +79,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
         }
     }
 
-    // Helper method to set the actual movies list into the recycler view on the activity
+    // Helper method to set the current movies list into the RecyclerView of the activity
     public void setMovieInfoList(List<Movie> moviesList) {
         this.moviesList = moviesList;
     }

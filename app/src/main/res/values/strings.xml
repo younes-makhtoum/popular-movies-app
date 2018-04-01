@@ -1,10 +1,14 @@
 <resources>
     <string name="app_name">Popular Movies</string>
 
+    <!-- Strings for Activity Titles -->
+    <string name="main_most_popular_title">Most popular movies</string>
+    <string name="main_top_rated_title">Top rated movies</string>
+    <string name="main_favorites_title">Favorite movies</string>
+    <string name="settings_title">Settings</string>
+
     <!-- Settings Menu Item -->
     <string name="settings_menu_item">Settings</string>
-    <!-- Settings Activity Title -->
-    <string name="settings_title">Movie Settings</string>
 
     <!-- Strings for sort_by preference -->
     <string name="settings_sort_by_label">Sort by</string>
@@ -16,13 +20,8 @@
     <string name="settings_sort_by_most_popular_value">popular</string>
     <string name="settings_sort_by_top_rated_label">Top rated</string>
     <string name="settings_sort_by_top_rated_value">top_rated</string>
-    <string name="movies">&#160;movies</string>
-
-    <!-- Values for Detail Activity labels -->
-    <string name="title_label">Title:</string>
-    <string name="plot_synopsis_label">Plot synopsis:</string>
-    <string name="user_rating_label">User rating:</string>
-    <string name="release_date_label">Release date:</string>
+    <string name="settings_sort_by_favorites_label">Favorites</string>
+    <string name="settings_sort_by_favorites_value">favorites</string>
 
     <!-- Content descriptions-->
     <string name="movie_poster">Movie poster</string>

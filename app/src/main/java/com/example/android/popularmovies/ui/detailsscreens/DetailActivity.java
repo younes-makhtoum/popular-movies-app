@@ -22,7 +22,7 @@ public class DetailActivity extends AppCompatActivity {
     // Tag for log messages
     private static final String LOG_TAG = DetailActivity.class.getName();
 
-    // Declare an instance of Movie
+    // Movie object instance declaration to handle the received parcelable
     private Movie selectedMovie;
 
     // Used to check the internet connection changes
@@ -100,13 +100,17 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            Intent settingsIntent = new Intent(this, SettingsActivity.class);
-            startActivity(settingsIntent);
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.action_settings:
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingsIntent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     public Movie getSelectedMovie(){

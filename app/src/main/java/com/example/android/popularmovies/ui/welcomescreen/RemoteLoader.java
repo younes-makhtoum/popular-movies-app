@@ -7,22 +7,22 @@ import com.example.android.popularmovies.services.QueryUtils;
 
 import java.util.List;
 
-public class MovieLoader extends AsyncTaskLoader<List<Movie>> {
+public class RemoteLoader extends AsyncTaskLoader<List<Movie>> {
 
     // Tag for log messages
-    private static final String LOG_TAG = MovieLoader.class.getName();
+    private static final String LOG_TAG = RemoteLoader.class.getName();
 
     // Query URL
     private String mUrl;
 
     /**
-     * Constructs a new {@link MovieLoader}.
+     * Constructs a new {@link RemoteLoader}.
      *
      * @param context of the activity
      * @param url to load data from
      */
 
-    public MovieLoader(Context context, String url) {
+    public RemoteLoader(Context context, String url) {
         super(context);
         mUrl = url;
     }
