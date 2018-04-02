@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.ToxicBakery.viewpager.transforms.ScaleInOutTransformer;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.ui.detailsscreens.reviews.ReviewsFragment;
 import com.example.android.popularmovies.ui.detailsscreens.trailers.TrailersFragment;
@@ -50,6 +51,9 @@ public class DetailActivity extends AppCompatActivity {
 
         // Set the adapter onto the view pager
         viewPager.setAdapter(detailAdapter);
+
+        // Animate the ViewPager
+        viewPager.setPageTransformer(true, new ScaleInOutTransformer());
 
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = findViewById(R.id.sliding_tabs);
