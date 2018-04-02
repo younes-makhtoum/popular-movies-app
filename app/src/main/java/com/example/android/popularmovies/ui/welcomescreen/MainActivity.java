@@ -1,6 +1,7 @@
 package com.example.android.popularmovies.ui.welcomescreen;
 
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -12,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         // Set a GridLayoutManager with default vertical orientation and two columns to the RecyclerView
-        binding.recyclerMain.recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+        binding.recyclerMain.recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), calculateNoOfColumns(this)));
 
         // Enable performance optimizations (significantly smoother scrolling),
         // by setting the following parameters on the RecyclerView
@@ -308,5 +310,14 @@ public class MainActivity extends AppCompatActivity {
         binding.recyclerMain.emptyView.setImageResource(R.drawable.no_favorites);
         binding.recyclerMain.emptyView.setVisibility(View.VISIBLE);
     }
-}
 
+    // Helper method to calculate the optimal number of columns to be displayed
+    // Source: https://stackoverflow.com/questions/29579811/changing-number-of-columns-with-gridlayoutmanager-and-recyclerview
+    public static int calculateNoOfColumns(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int scalingFactor = 150;
+        // return the optimal number of columns
+        return (int) (dpWidth / scalingFactor);
+    }
+}
