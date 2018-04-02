@@ -7,11 +7,11 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +40,13 @@ public class MainActivity extends AppCompatActivity {
     // RecyclerView adapter instance
     private MovieAdapter movieAdapter;
 
+    // List of favorite movies
+    List<Movie> favoriteMoviesList;
+
+    // Key for saving the list of favorite movies in a bundle,
+    // in case of an orientation change
+    static final String STATE_FAVORITE_MOVIES_LIST = "STATE_FAVORITE_MOVIES_LIST";
+
     // Loader ID's
     private static final int REMOTE_MOVIE_LOADER_ID = 101;
     private static final int FAVORITES_MOVIE_LOADER_ID = 102;
@@ -56,12 +63,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Get the preferred sorting method from the shared preferences
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         sortBy = sharedPrefs.getString(
                 getString(R.string.settings_sort_by_key),
                 getString(R.string.settings_sort_by_default)
         );
 
+        // Set the screen title accordingly
         if (sortBy.equals(getString(R.string.settings_sort_by_most_popular_value))) {
             setTitle(getString(R.string.main_most_popular_title));
         } else if (sortBy.equals(getString(R.string.settings_sort_by_top_rated_value))) {
@@ -70,10 +79,15 @@ public class MainActivity extends AppCompatActivity {
             setTitle(getString(R.string.main_favorites_title));
         }
 
+        // Check if we a saved state in the case of a sorting by favorites
+        if (savedInstanceState != null) {
+            favoriteMoviesList = savedInstanceState.getParcelableArrayList(STATE_FAVORITE_MOVIES_LIST);
+        }
+
         // Inflate the content view
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        // set GridLayoutManager with default vertical orientation and two columns to the RecyclerView
+        // Set a GridLayoutManager with default vertical orientation and two columns to the RecyclerView
         binding.recyclerMain.recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
 
         // Enable performance optimizations (significantly smoother scrolling),
@@ -87,10 +101,11 @@ public class MainActivity extends AppCompatActivity {
         SpacesItemDecoration decoration = new SpacesItemDecoration(4);
         binding.recyclerMain.recyclerView.addItemDecoration(decoration);
 
+        // Set the RecyclerView adapter to the correspondent view
         movieAdapter = new MovieAdapter(this);
-
         binding.recyclerMain.recyclerView.setAdapter(movieAdapter);
 
+        // Initialize the internet connection listeners
         merlin = new Merlin.Builder().withConnectableCallbacks().build(getApplicationContext());
         merlinsBeard = MerlinsBeard.from(getApplicationContext());
 
@@ -161,21 +176,27 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (favoriteMoviesList != null) {
+            outState.putParcelableArrayList(STATE_FAVORITE_MOVIES_LIST, (ArrayList<? extends Parcelable>) favoriteMoviesList);
+        }
+    }
+
     // Helper method to load movies either remotely from API or from the user's favorites db.
     private void loadMovies(int loaderID, boolean isRefreshed) {
         LoaderManager loaderManager = getLoaderManager();
         switch (loaderID) {
             case REMOTE_MOVIE_LOADER_ID:
                 loaderManager.initLoader(REMOTE_MOVIE_LOADER_ID, null, remoteMovies);
-                binding.recyclerMain.recyclerView.setVisibility(View.GONE);
-                binding.recyclerMain.loadingSpinner.setVisibility(View.VISIBLE);
                 break;
             case FAVORITES_MOVIE_LOADER_ID:
                 if(!isRefreshed) {
-                    loaderManager.initLoader(FAVORITES_MOVIE_LOADER_ID, null, favouriteMovies);
+                    loaderManager.initLoader(FAVORITES_MOVIE_LOADER_ID, null, favoriteMovies);
                 }
                 else {
-                    loaderManager.restartLoader(FAVORITES_MOVIE_LOADER_ID, null, favouriteMovies).forceLoad();
+                    loaderManager.restartLoader(FAVORITES_MOVIE_LOADER_ID, null, favoriteMovies).forceLoad();
                 }
                 break;
         }
@@ -185,6 +206,8 @@ public class MainActivity extends AppCompatActivity {
     LoaderManager.LoaderCallbacks<List<Movie>> remoteMovies = new LoaderManager.LoaderCallbacks<List<Movie>>() {
         @Override
         public Loader<List<Movie>> onCreateLoader(int loaderID, Bundle args) {
+            binding.recyclerMain.recyclerView.setVisibility(View.GONE);
+            binding.recyclerMain.loadingSpinner.setVisibility(View.VISIBLE);
             return new RemoteLoader(MainActivity.this, moviesUrlBuilder(sortBy));
         }
 
@@ -216,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     // Get the movies from the user's favorites database
-    LoaderManager.LoaderCallbacks<Cursor> favouriteMovies = new LoaderManager.LoaderCallbacks<Cursor>() {
+    LoaderManager.LoaderCallbacks<Cursor> favoriteMovies = new LoaderManager.LoaderCallbacks<Cursor>() {
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
             String[] projection = {
@@ -238,24 +261,25 @@ public class MainActivity extends AppCompatActivity {
         public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
             // Clear the adapter of previous movies data
             movieAdapter.setMovieInfoList(null);
-            List<Movie> favoriteMovies = new ArrayList<>();
 
-            Log.v(LOG_TAG,"LOG// cursor = " + cursor);
-
-            if(cursor != null && cursor.moveToFirst()) {
-                do {
-                    int movieId = cursor.getInt(cursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_ID));
-                    float movieUserRating = cursor.getFloat(cursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_USER_RATING));
-                    String movieTitle = cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_NAME));
-                    String moviePoster = cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_POSTER));
-                    String moviePlotSynopsis = cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_PLOT_SYNOPSIS));
-                    String movieReleaseDate = cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_RELEASE_DATE));
-                    favoriteMovies.add(new Movie(movieId, movieUserRating, movieTitle, moviePoster, moviePlotSynopsis, movieReleaseDate));
-                } while (cursor.moveToNext());
-                cursor.close();
+            // Only try to get data from the cursor if it has not been previously closed
+            if(!cursor.isClosed()) {
+                favoriteMoviesList = new ArrayList<>();
+                if (cursor.moveToFirst()) {
+                    do {
+                        int movieId = cursor.getInt(cursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_ID));
+                        float movieUserRating = cursor.getFloat(cursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_USER_RATING));
+                        String movieTitle = cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_NAME));
+                        String moviePoster = cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_POSTER));
+                        String moviePlotSynopsis = cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_PLOT_SYNOPSIS));
+                        String movieReleaseDate = cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_RELEASE_DATE));
+                        favoriteMoviesList.add(new Movie(movieId, movieUserRating, movieTitle, moviePoster, moviePlotSynopsis, movieReleaseDate));
+                    } while (cursor.moveToNext());
+                    cursor.close();
+                }
             }
-            if(!favoriteMovies.isEmpty()) {
-                movieAdapter.setMovieInfoList(favoriteMovies);
+            if(!favoriteMoviesList.isEmpty()) {
+                movieAdapter.setMovieInfoList(favoriteMoviesList);
                 movieAdapter.notifyDataSetChanged();
                 // Show the successful loading layout
                 binding.recyclerMain.recyclerView.setVisibility(View.VISIBLE);

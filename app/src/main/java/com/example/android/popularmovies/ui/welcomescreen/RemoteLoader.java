@@ -2,6 +2,7 @@ package com.example.android.popularmovies.ui.welcomescreen;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.util.Log;
 
 import com.example.android.popularmovies.services.QueryUtils;
 
@@ -14,6 +15,10 @@ public class RemoteLoader extends AsyncTaskLoader<List<Movie>> {
 
     // Query URL
     private String mUrl;
+
+    // Instance of a List of movies,
+    // in case we might need to use cached data on orientation change
+    private List<Movie> cachedData;
 
     /**
      * Constructs a new {@link RemoteLoader}.
@@ -29,7 +34,14 @@ public class RemoteLoader extends AsyncTaskLoader<List<Movie>> {
 
     @Override
     protected void onStartLoading() {
-        forceLoad();
+        Log.v(LOG_TAG, "LOG// We are in onStartLoading and cachedData is :" + cachedData);
+        if (cachedData != null) {
+            // Use cached data
+            deliverResult(cachedData);
+        } else {
+            // We have no data, so kick-off loading it
+            forceLoad();
+        }
     }
 
     @Override
@@ -39,5 +51,12 @@ public class RemoteLoader extends AsyncTaskLoader<List<Movie>> {
         }
         // Perform the network request, parse the response, and extract a list of movies.
         return QueryUtils.fetchMovieData(mUrl);
+    }
+
+    @Override
+    public void deliverResult(List<Movie> data) {
+        // Data from API response is saved for later retrieval
+        cachedData = data;
+        super.deliverResult(data);
     }
 }
