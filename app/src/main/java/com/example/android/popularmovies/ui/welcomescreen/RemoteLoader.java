@@ -34,7 +34,6 @@ public class RemoteLoader extends AsyncTaskLoader<List<Movie>> {
 
     @Override
     protected void onStartLoading() {
-        Log.v(LOG_TAG, "LOG// We are in onStartLoading and cachedData is :" + cachedData);
         if (cachedData != null) {
             // Use cached data
             deliverResult(cachedData);

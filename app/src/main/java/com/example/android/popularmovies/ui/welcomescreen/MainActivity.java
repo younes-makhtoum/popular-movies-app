@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,9 +46,15 @@ public class MainActivity extends AppCompatActivity {
     // List of favorite movies
     List<Movie> favoriteMoviesList;
 
-    // Key for saving the list of favorite movies in a bundle,
-    // in case of an orientation change
+    // Instance of GridLayoutManager
+    GridLayoutManager gridLayoutManager;
+
+    // Scroll position
+    int scrollPosition;
+
+    // Keys for saving data in case of a screen orientation change
     static final String STATE_FAVORITE_MOVIES_LIST = "STATE_FAVORITE_MOVIES_LIST";
+    static final String STATE_SCROLL_POSITION = "STATE_SCROLL_POSITION";
 
     // Loader ID's
     private static final int REMOTE_MOVIE_LOADER_ID = 101;
@@ -81,16 +88,12 @@ public class MainActivity extends AppCompatActivity {
             setTitle(getString(R.string.main_favorites_title));
         }
 
-        // Check if we a saved state in the case of a sorting by favorites
-        if (savedInstanceState != null) {
-            favoriteMoviesList = savedInstanceState.getParcelableArrayList(STATE_FAVORITE_MOVIES_LIST);
-        }
-
         // Inflate the content view
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        // Set a GridLayoutManager with default vertical orientation and two columns to the RecyclerView
-        binding.recyclerMain.recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), calculateNoOfColumns(this)));
+                // Set a GridLayoutManager with default vertical orientation and two columns to the RecyclerView
+        gridLayoutManager = new GridLayoutManager(getApplicationContext(), calculateNoOfColumns(this));
+        binding.recyclerMain.recyclerView.setLayoutManager(gridLayoutManager);
 
         // Enable performance optimizations (significantly smoother scrolling),
         // by setting the following parameters on the RecyclerView
@@ -110,6 +113,12 @@ public class MainActivity extends AppCompatActivity {
         // Initialize the internet connection listeners
         merlin = new Merlin.Builder().withConnectableCallbacks().build(getApplicationContext());
         merlinsBeard = MerlinsBeard.from(getApplicationContext());
+
+        // Check if we a saved state in the case of a sorting by favorites
+        if (savedInstanceState != null) {
+            favoriteMoviesList = savedInstanceState.getParcelableArrayList(STATE_FAVORITE_MOVIES_LIST);
+            scrollPosition = savedInstanceState.getInt(STATE_SCROLL_POSITION);
+        }
 
         // Internet status activation is monitored with this listener registration
         merlin.registerConnectable(new Connectable() {
@@ -184,6 +193,9 @@ public class MainActivity extends AppCompatActivity {
         if (favoriteMoviesList != null) {
             outState.putParcelableArrayList(STATE_FAVORITE_MOVIES_LIST, (ArrayList<? extends Parcelable>) favoriteMoviesList);
         }
+        if(gridLayoutManager != null) {
+            outState.putInt(STATE_SCROLL_POSITION, gridLayoutManager.findFirstVisibleItemPosition());
+        }
     }
 
     // Helper method to load movies either remotely from API or from the user's favorites db.
@@ -224,6 +236,8 @@ public class MainActivity extends AppCompatActivity {
             if (movies != null && !movies.isEmpty()) {
                 movieAdapter.setMovieInfoList(movies);
                 movieAdapter.notifyDataSetChanged();
+                // If a scrolled position has been saved, scroll the gridlayout to it
+                gridLayoutManager.scrollToPosition(scrollPosition);
                 // Show the successful loading layout
                 binding.recyclerMain.recyclerView.setVisibility(View.VISIBLE);
             } else {

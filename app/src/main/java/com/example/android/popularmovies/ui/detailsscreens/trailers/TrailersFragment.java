@@ -121,7 +121,6 @@ public class TrailersFragment extends Fragment implements android.support.v4.app
         // If there is a valid list of movies, then add them to the adapter's data set.
         // This will trigger the GridView to update itself.
         if (trailers != null && !trailers.isEmpty()) {
-            Log.v(LOG_TAG,"data is loading");
             trailerAdapter.setTrailerInfoList(trailers);
             trailerAdapter.notifyDataSetChanged();
             // Show the successful loading layout

@@ -113,7 +113,6 @@ public class ReviewsFragment extends Fragment implements android.support.v4.app.
 
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<List<Review>> loader, List<Review> reviews) {
-        Log.v(LOG_TAG,"LOG// onLoadFinished reached");
         // Hide loading indicator because the data has been loaded
         binding.recyclerReviews.loadingSpinner.setVisibility(View.GONE);
         // Clear the adapter of previous movies data
@@ -121,7 +120,6 @@ public class ReviewsFragment extends Fragment implements android.support.v4.app.
         // If there is a valid list of movies, then add them to the adapter's data set.
         // This will trigger the GridView to update itself.
         if (reviews != null && !reviews.isEmpty()) {
-            Log.v(LOG_TAG,"data is loading");
             reviewAdapter.setReviewInfoList(reviews);
             reviewAdapter.notifyDataSetChanged();
             // Show the successful loading layout
@@ -130,7 +128,6 @@ public class ReviewsFragment extends Fragment implements android.support.v4.app.
             dataIsLoaded = true;
         }
         else {
-            Log.v(LOG_TAG,"LOG// data is missing");
             // Set empty view to display the "no results found" image
             binding.recyclerReviews.emptyView.setImageResource(R.drawable.no_results);
             binding.recyclerReviews.emptyView.setVisibility(View.VISIBLE);

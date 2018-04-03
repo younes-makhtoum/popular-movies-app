@@ -74,7 +74,6 @@ public class DetailActivity extends AppCompatActivity {
                 }
                 if (reviewsFragment != null) {
                     if (reviewsFragment.isAdded()) {
-                    Log.v(LOG_TAG,"LOG// reviewsFragment isAdded");
                     reviewsFragment.queryReviews();
                     }
                 }
